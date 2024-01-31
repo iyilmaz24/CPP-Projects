@@ -22,25 +22,26 @@ class TVector
 
         ~TVector();
         TVector(const TVector<T>& v);
-        TVector(TVector<T> && v);
         TVector<T>& operator=(const TVector<T>& v);
+
+        TVector(TVector<T> && v);
         TVector<T>& operator=(TVector<T> && v);
 
         bool IsEmpty() const;	
         void Clear();		
         int GetSize() const;			
 
+        void InsertBack(const T& d);
+        void RemoveBack();	
+        
         T& GetFirst() const;			
         T& GetLast() const;			
-
-        
 
         TVectorIterator<T> GetIterator() const;
 
 
 
-        void InsertBack(const T& d);
-        void RemoveBack();	
+
 
         void Print(std::ostream& os, char delim = ' ') const;
 
@@ -55,6 +56,8 @@ class TVector
 
 template <typename T>
 T TVector<T>::dummy;		// initialization of static member
+
+
 
 
 template <typename T>
