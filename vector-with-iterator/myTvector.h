@@ -30,7 +30,19 @@ class TVector
         void Clear();		
         int GetSize() const;			
 
+        T& GetFirst() const;			
+        T& GetLast() const;			
 
+        
+
+        TVectorIterator<T> GetIterator() const;
+
+
+
+        void InsertBack(const T& d);
+        void RemoveBack();	
+
+        void Print(std::ostream& os, char delim = ' ') const;
 
     private:
         T* array;			// pointer to dynamic array of items
@@ -41,6 +53,28 @@ class TVector
         static const unsigned int SPARECAPACITY = 10;
 };
 
+template <typename T>
+T TVector<T>::dummy;		// initialization of static member
+
+
+template <typename T>
+class TVectorIterator
+{
+   friend class TVector<T>;
+
+    public:
+        TVectorIterator();			
+        bool HasNext() const;		
+        bool HasPrevious() const;		
+        TVectorIterator<T> Next();		
+        TVectorIterator<T> Previous();	
+        T& GetData() const;			
+
+    private:
+        unsigned int index;			// index of current item in vector
+        T* ptr;				// pointer to the data item
+        unsigned int vsize;			// size of associated vector
+};
 
 
 #include "tvector.hpp"

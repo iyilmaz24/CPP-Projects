@@ -25,7 +25,45 @@ int main() {
     v3.GetSize();
     v3.IsEmpty();
 
+    v3.GetFirst();
+    v3.GetLast();
 
+    v5.GetFirst();
+    v5.Print(cout);
+    v6.Print(cout);
+
+    int firstv6 = v6.GetFirst();
+    int firstv2 = v2.GetFirst();
+
+    cout << "firstv6: " << firstv6 << endl;
+    cout << "firstv2: " << firstv2 << endl;
+
+
+    TVectorIterator<int> iter = v6.GetIterator();
+    iter.GetData();
+    cout << (iter.HasNext() == 1 ? "True" : "False") << " " << (iter.HasPrevious() == 1 ? "True" : "False") << endl;
+
+    iter.Next();
+    iter.GetData();
+
+    // iter.Previous();
+    // iter.GetData();
+    // iter.Previous();
+    // iter.GetData();
+    // iter.Previous();
+    // iter.GetData();
+    // iter.Previous();
+    // iter.GetData();
+
+
+    iter.Next();
+    iter.Next();
+    iter.Next();
+    iter.Next();
+    iter.Previous();
+    iter.Previous();
+    iter.Previous();
+    
     return 0;
 }
 
