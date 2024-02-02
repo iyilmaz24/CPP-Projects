@@ -116,10 +116,6 @@ T& TVector<T>::GetFirst() const {
         return this->dummy;
     }
     return this->array[0];
-    // this->size--;
-
-    // do we need to shift the array after getting first element?
-    
 }
 
 
@@ -130,10 +126,6 @@ T& TVector<T>::GetLast() const {
         return this->dummy;
     }
     return this->array[this->size-1];
-    // this->size--;
-
-    // make sure the last element in the array is set to empty after returning?
-
 }
 
 
@@ -141,7 +133,7 @@ template <typename T>
 void TVector<T>::Print(std::ostream& os, char delim) const {
     std::cout << "Print()" << std::endl;
     for(int i = 0; i < this->size; i++) {
-        std::cout << this->array[i] << " ";
+        std::cout << this->array[i] << delim;
     }
     std::cout << std::endl;
 
@@ -176,7 +168,113 @@ void TVector<T>::RemoveBack() {
 }	
 
 
+template <typename T>
+void TVector<T>::SetCapacity(unsigned int c) {
+    if(c != this->capacity) {
+        T* temp = new T[c];
 
+        this->size = (c < this->size ? c : this->size);
+        for(int i = 0; i < this->size; i++) {
+            temp[i] = this->array[i];
+        }
+        delete [] this->array;
+        this->array = temp;
+        this->capacity = c;
+    }
+}   
+
+
+template <typename T>
+TVector<T> operator+(const TVector<T>& t1, const TVector<T>& t2) {
+    std::cout << "operator+" << std::endl;
+    TVector<T> temp;
+    temp.SetCapacity(t1.GetSize() + t2.GetSize() + 10);
+    TVectorIterator<T> tempIter = temp.GetIterator();
+
+    TVectorIterator<T> t1Iter = t1.GetIterator();
+    while(t1Iter.HasNext()) {
+        temp.Insert(tempIter, t1Iter.GetData());
+        tempIter.Next();
+        t1Iter.Next();
+    }
+    if(t1.GetSize() != 0) {
+        temp.Insert(tempIter, t1Iter.GetData());
+        tempIter.Next();
+        t1Iter.Next();   
+    }
+    
+    TVectorIterator<T> t2Iter = t2.GetIterator();
+    while(t2Iter.HasNext()) {
+        temp.Insert(tempIter, t2Iter.GetData());
+        tempIter.Next();
+        t2Iter.Next();
+    }
+    if(t2.GetSize() != 0) {
+        temp.Insert(tempIter, t2Iter.GetData());
+        tempIter.Next();
+        t2Iter.Next();   
+    }
+
+    return temp;
+}
+
+
+template <typename T>
+TVectorIterator<T> TVector<T>::Insert(TVectorIterator<T> pos, const T& d) {
+    if(this->size == this->capacity) {
+        this->capacity *= 2;
+        T* tempArr = new T[this->capacity];
+        for(int i = 0; i < this->size; i++) {
+            tempArr[i] = this->array[i];
+        }
+        delete [] this->array;
+        this->array = tempArr;
+        pos.ptr = this->array;
+        tempArr = nullptr;
+    }
+
+    if(this->size == 0 || pos.index > this->capacity - 1) {
+        // insert in the back, if empty vector or out of range
+        this->array[this->size] = d;
+        pos.index = this->size;
+        this->size++;
+        pos.vsize = this->size;
+        return pos;
+    }
+
+    T* tempArr = new T[this->capacity];
+    int j = 0;
+    for(int i = 0; i < this->size + 1; i++) {
+        if(pos.index == i) {
+            tempArr[i] = d;
+            i += 1;
+        }
+        tempArr[i] = this->array[j];
+        j++;
+    }
+    delete [] this->array;
+    this->array = tempArr;
+    pos.ptr = this->array;
+    tempArr = nullptr;
+
+    this->size++;
+    pos.vsize = this->size;
+    return pos;
+    
+    // returned iterator set to the inserted data
+}
+
+
+template <typename T>
+TVectorIterator<T> TVector<T>::Remove(TVectorIterator<T> pos) {
+
+}
+
+
+template <typename T>
+TVectorIterator<T> TVector<T>::Remove(TVectorIterator<T> pos1, TVectorIterator<T> pos2){
+
+}
 
 
 template <typename T>
@@ -185,6 +283,17 @@ TVectorIterator<T> TVector<T>::GetIterator() const {
     TVectorIterator<T> temp;
     temp.ptr = this->array;
     temp.index = 0;
+    temp.vsize = this->size;
+    return temp;
+}
+
+
+template <typename T>
+TVectorIterator<T> TVector<T>::GetIteratorEnd() const {
+    std::cout << "Return Iterator to last item" << std::endl;
+    TVectorIterator<T> temp;
+    temp.ptr = this->array;
+    temp.index = this->size - 1;
     temp.vsize = this->size;
     return temp;
 }
@@ -202,6 +311,7 @@ TVectorIterator<T>::TVectorIterator() {
 template <typename T>
 T& TVectorIterator<T>::GetData() const {
     std::cout << "GetData(): " << this->ptr[index] << std::endl;
+    std::cout << "Current index: " << this->index << std::endl;
     return this->ptr[index];
 }
 
@@ -226,6 +336,7 @@ bool TVectorIterator<T>::HasPrevious() const {
 template <typename T>
 TVectorIterator<T> TVectorIterator<T>::Next() {
     std::cout << "Next: Current index " << this->index << std::endl;
+    std::cout << "Current vsize: " << vsize << std::endl;
     if(this->HasNext()) {
         TVectorIterator<T> newI;
         newI.index = this->index + 1;
