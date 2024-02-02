@@ -3,7 +3,7 @@
 
 template <typename T>
 TVector<T>::TVector() {
-    std::cout << "Default Constructor Called" << std::endl;
+    // std::cout << "Default Constructor Called" << std::endl;
     this->capacity = this->SPARECAPACITY;
     this->array = new T[this->capacity];
     this->size = 0;
@@ -12,7 +12,7 @@ TVector<T>::TVector() {
 
 template <typename T>
 TVector<T>::TVector(T val, int num) {
-    std::cout << "Parameterized Constructor Called" << std::endl;
+    // std::cout << "Parameterized Constructor Called" << std::endl;
     this->capacity = num + this->SPARECAPACITY;
     this->array = new T[this->capacity];
     this->size = num;
@@ -31,7 +31,7 @@ TVector<T>::~TVector() {
 
 template <typename T>
 TVector<T>::TVector(const TVector<T>& v) {
-    std::cout << "Copy Constructor Called" << std::endl;
+    // std::cout << "Copy Constructor Called" << std::endl;
     this->capacity = v.capacity;
     this->size = v.size;
 
@@ -44,7 +44,7 @@ TVector<T>::TVector(const TVector<T>& v) {
 
 template <typename T>
 TVector<T>::TVector(TVector<T> && v) {
-    std::cout << "Move Constructor Called" << std::endl;
+    // std::cout << "Move Constructor Called" << std::endl;
     this->capacity = v.capacity;
     this->size = v.size;
 
@@ -55,7 +55,7 @@ TVector<T>::TVector(TVector<T> && v) {
 
 template <typename T>
 TVector<T>& TVector<T>::operator=(const TVector<T>& v) {
-    std::cout << "Copy Assignment Operator Called" << std::endl;
+    // std::cout << "Copy Assignment Operator Called" << std::endl;
     this->capacity = v.capacity;
     this->size = v.size;
 
@@ -69,7 +69,7 @@ TVector<T>& TVector<T>::operator=(const TVector<T>& v) {
 
 template <typename T>
 TVector<T>& TVector<T>::operator=(TVector<T> && v) {
-    std::cout << "Move Assignment Operator Called" << std::endl;
+    // std::cout << "Move Assignment Operator Called" << std::endl;
     int tempC = this->capacity;
     this->capacity = v.capacity;
     v.capacity = tempC;
@@ -88,14 +88,14 @@ TVector<T>& TVector<T>::operator=(TVector<T> && v) {
 
 template <typename T>
 bool TVector<T>::IsEmpty() const {
-    std::cout << "IsEmpty: " << ((this->size == 0) == 1 ? "true" : "false" ) << std::endl;
+    // std::cout << "IsEmpty: " << ((this->size == 0) == 1 ? "true" : "false" ) << std::endl;
     return this->size == 0;
 }
 
 
 template <typename T>
 void TVector<T>::Clear() {
-    std::cout << "Clear()" << std::endl;
+    // std::cout << "Clear()" << std::endl;
     delete [] this->array;
     this->array = new T[this->capacity];
     this->size = 0;
@@ -104,7 +104,7 @@ void TVector<T>::Clear() {
 
 template <typename T>
 int TVector<T>::GetSize() const {
-    std::cout << "Size: " << this->size << std::endl;
+    // std::cout << "Size: " << this->size << std::endl;
     return this->size;
 }
 		
@@ -112,7 +112,7 @@ int TVector<T>::GetSize() const {
 template <typename T>
 T& TVector<T>::GetFirst() const {
     if(this->size == 0) { 
-        std::cout << "Vector is empty" << std::endl;
+        // std::cout << "Vector is empty" << std::endl;
         return this->dummy;
     }
     return this->array[0];
@@ -122,7 +122,7 @@ T& TVector<T>::GetFirst() const {
 template <typename T>
 T& TVector<T>::GetLast() const {
     if(this->size == 0) { 
-        std::cout << "Vector is empty" << std::endl;
+        // std::cout << "Vector is empty" << std::endl;
         return this->dummy;
     }
     return this->array[this->size-1];
@@ -131,11 +131,10 @@ T& TVector<T>::GetLast() const {
 
 template <typename T>
 void TVector<T>::Print(std::ostream& os, char delim) const {
-    std::cout << "Print()" << std::endl;
+    // std::cout << "Print()" << std::endl;
     for(int i = 0; i < this->size; i++) {
         std::cout << this->array[i] << delim;
     }
-    std::cout << std::endl;
 
 }
 
@@ -182,7 +181,7 @@ void TVector<T>::SetCapacity(unsigned int c) {
 
 template <typename T>
 TVector<T> operator+(const TVector<T>& t1, const TVector<T>& t2) {
-    std::cout << "operator+" << std::endl;
+    // std::cout << "operator+" << std::endl;
     TVector<T> temp;
     temp.SetCapacity(t1.GetSize() + t2.GetSize() + 10);
     TVectorIterator<T> tempIter = temp.GetIterator();
@@ -288,7 +287,7 @@ TVectorIterator<T> TVector<T>::Remove(TVectorIterator<T> pos) {
     tempArr = nullptr;
     pos.ptr = this->array;
 
-    std::cout << "pos.index: " << pos.index << ", this->array[pos.index]: " << this->array[pos.index] << std::endl; 
+    // std::cout << "pos.index: " << pos.index << ", this->array[pos.index]: " << this->array[pos.index] << std::endl; 
     this->size--;
     pos.vsize = this->size;
     return pos;
@@ -347,7 +346,7 @@ TVectorIterator<T> TVector<T>::Remove(TVectorIterator<T> pos1, TVectorIterator<T
 
 template <typename T>
 TVectorIterator<T> TVector<T>::GetIterator() const {
-    std::cout << "Return Iterator to first item" << std::endl;
+    // std::cout << "Return Iterator to first item" << std::endl;
     TVectorIterator<T> temp;
     if(this->size > 0) {
         temp.ptr = this->array;
@@ -360,7 +359,7 @@ TVectorIterator<T> TVector<T>::GetIterator() const {
 
 template <typename T>
 TVectorIterator<T> TVector<T>::GetIteratorEnd() const {
-    std::cout << "Return Iterator to last item" << std::endl;
+    // std::cout << "Return Iterator to last item" << std::endl;
     TVectorIterator<T> temp;
     temp.index = 0;
     if(this->size > 0) {
@@ -375,7 +374,7 @@ TVectorIterator<T> TVector<T>::GetIteratorEnd() const {
 
 template <typename T>
 TVectorIterator<T>::TVectorIterator() {
-    std::cout << "Default Iterator Constructor" << std::endl;
+    // std::cout << "Default Iterator Constructor" << std::endl;
     this->index;
     this->vsize;
     this->ptr = nullptr;
@@ -383,14 +382,20 @@ TVectorIterator<T>::TVectorIterator() {
 
 template <typename T>
 T& TVectorIterator<T>::GetData() const {
-    std::cout << "GetData(): " << this->ptr[index] << std::endl;
-    std::cout << "Current index: " << this->index << std::endl;
+    // std::cout << "GetData(): " << this->ptr[index] << std::endl;
+    // std::cout << "Current index: " << this->index << std::endl;
+    if(this->ptr == nullptr) {
+        return TVector<T>::dummy;
+    }
     return this->ptr[index];
 }
 
 
 template <typename T>
 bool TVectorIterator<T>::HasNext() const {
+    if(this->ptr == nullptr) {
+        return false;
+    }
     if(this->index != this->vsize - 1) {
         return true;
     }
@@ -400,6 +405,9 @@ bool TVectorIterator<T>::HasNext() const {
 
 template <typename T>
 bool TVectorIterator<T>::HasPrevious() const {
+    if(this->ptr == nullptr) {
+        return false;
+    }
     if(this->index == 0) {
         return false;
     }
@@ -408,32 +416,32 @@ bool TVectorIterator<T>::HasPrevious() const {
 
 template <typename T>
 TVectorIterator<T> TVectorIterator<T>::Next() {
-    std::cout << "Next: Current index " << this->index << std::endl;
-    std::cout << "Current vsize: " << vsize << std::endl;
+    // std::cout << "Next: Current index " << this->index << std::endl;
+    // std::cout << "Current vsize: " << vsize << std::endl;
     if(this->HasNext()) {
         TVectorIterator<T> newI;
         newI.index = this->index + 1;
         newI.ptr = this->ptr;
         newI.vsize = this->vsize;
         *this = newI;
-        std::cout << "Next: New index " << newI.index << std::endl << std::endl;
+        // std::cout << "Next: New index " << newI.index << std::endl << std::endl;
         return *this;
     }
-    std::cout << "No Next Element" << std::endl;
+    // std::cout << "No Next Element" << std::endl;
 }
 
 template <typename T>
 TVectorIterator<T> TVectorIterator<T>::Previous() {
-    std::cout << "Prev: Current index " << this->index << std::endl;
+    // std::cout << "Prev: Current index " << this->index << std::endl;
     if(this->HasPrevious()) {
         TVectorIterator<T> newI;
         newI.index = this->index - 1;
         newI.ptr = this->ptr;
         newI.vsize = this->vsize;
         *this = newI;
-        std::cout << "Prev: New index " << newI.index << std::endl << std::endl;
+        // std::cout << "Prev: New index " << newI.index << std::endl << std::endl;
         return *this;
     }
-    std::cout << "No Prev Element" << std::endl;
+    // std::cout << "No Prev Element" << std::endl;
 }
 
