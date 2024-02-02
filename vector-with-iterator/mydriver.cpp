@@ -63,7 +63,47 @@ int main() {
     iter.Previous();
     iter.Previous();
     iter.Previous();
-    
+
+    cout << "Iterator at end" << endl;
+    TVectorIterator<int> iterEnd = v6.GetIteratorEnd();
+    iterEnd.Next();
+    iterEnd.Next();
+    iterEnd.Previous();
+
+    v6.SetCapacity(5);
+    v6.Print(cout);
+    v6.SetCapacity(7);
+    v6.Print(cout);
+
+    TVector<int> v7;
+    v7.Print(cout);
+    // v7 = v3 + v4;
+
+    int insertNum = 9;
+    TVectorIterator<int> newIter = v6.GetIterator();
+    newIter.Next();
+    newIter.Next();
+    TVectorIterator<int> iterFirst = v6.Insert(newIter, insertNum);
+    iterFirst.Next();
+    v6.Print(cout);
+        newIter.Next();
+            newIter.Next();
+                newIter.Next();
+                    newIter.Next();
+                        newIter.Next();
+                            newIter.Next();
+    cout << "iterSecond construction" << endl;
+    TVectorIterator<int> iterSecond = v6.Insert(newIter, insertNum);
+    iterSecond.GetData();
+    iterSecond.Next();
+    v6.Print(cout);
+    iterSecond.Next();
+
+    TVector<int> v10(10, 3);
+    TVector<int> v11;
+    v11 = v10 + v6;
+    v11.Print(cout);
+
     return 0;
 }
 
