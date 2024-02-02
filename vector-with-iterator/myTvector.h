@@ -38,9 +38,16 @@ class TVector
         T& GetLast() const;			
 
         TVectorIterator<T> GetIterator() const;
+        TVectorIterator<T> GetIteratorEnd() const;
+
+        void SetCapacity(unsigned int c);
 
 
+        TVectorIterator<T> Insert(TVectorIterator<T> pos, const T& d);
 
+        TVectorIterator<T> Remove(TVectorIterator<T> pos);
+
+        TVectorIterator<T> Remove(TVectorIterator<T> pos1, TVectorIterator<T> pos2);
 
 
         void Print(std::ostream& os, char delim = ' ') const;
@@ -57,7 +64,9 @@ class TVector
 template <typename T>
 T TVector<T>::dummy;		// initialization of static member
 
-
+// stand-alone function for concatenating two TVector objects
+template <typename T>
+TVector<T> operator+(const TVector<T>& t1, const TVector<T>& t2);
 
 
 template <typename T>
