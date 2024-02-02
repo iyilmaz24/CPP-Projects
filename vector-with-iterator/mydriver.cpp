@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
 
-#include "myTvector.h"
+#include "tvector.h"
 
-// using namespace std;
+using namespace std;
 
 int main() {
 
@@ -102,6 +102,36 @@ int main() {
     TVector<int> v10(10, 3);
     TVector<int> v11;
     v11 = v10 + v6;
+    v11.Print(cout);
+
+    cout << "Remove method testing" << endl;
+    TVectorIterator<int> iterv11 = v11.GetIterator();
+    iterv11.Next();
+    iterv11.Next();
+    iterv11.GetData();
+    v11.Print(cout);
+
+    cout << "Delete 1:" << endl;
+    iterv11 = v11.Remove(iterv11);
+    v11.Print(cout);
+    iterv11.GetData();
+
+
+    cout << "Delete 2:" << endl;
+    iterv11 = v11.Remove(iterv11);
+    v11.Print(cout);
+    iterv11.GetData();
+
+    cout << "Delete 3:" << endl;
+    iterv11 = v11.Remove(iterv11);
+    v11.Print(cout);
+    iterv11.GetData();
+
+    TVectorIterator<int> iterv11End = v11.GetIteratorEnd();
+    iterv11End.GetData();
+
+    iterv11 = v11.Remove(iterv11, iterv11End);
+    iterv11.GetData();
     v11.Print(cout);
 
     return 0;
