@@ -24,7 +24,7 @@ TVector<T>::TVector(T val, int num) {
 
 template <typename T>
 TVector<T>::~TVector() {
-    cout << "Destructor Called" << endl;
+    // cout << "Destructor Called" << endl;
     delete [] this->array;
 }
 
@@ -159,11 +159,7 @@ void TVector<T>::InsertBack(const T& d) {
 
 template <typename T>
 void TVector<T>::RemoveBack() {
-
-    // do we set the spot to dummy or to empty?
-
-    T empty;
-    this->array[size] = empty;
+    this->array[size] = dummy;
     this->size--;
 }	
 
@@ -221,6 +217,10 @@ TVector<T> operator+(const TVector<T>& t1, const TVector<T>& t2) {
 
 template <typename T>
 TVectorIterator<T> TVector<T>::Insert(TVectorIterator<T> pos, const T& d) {
+    if(pos.ptr == nullptr) {
+        pos.ptr = this->array;
+    }
+
     if(this->size == this->capacity) {
         this->capacity *= 2;
         T* tempArr = new T[this->capacity];
@@ -268,12 +268,80 @@ TVectorIterator<T> TVector<T>::Insert(TVectorIterator<T> pos, const T& d) {
 template <typename T>
 TVectorIterator<T> TVector<T>::Remove(TVectorIterator<T> pos) {
 
+    if(this->size == 0 || pos.index > this->capacity - 1) {
+        // return default iterator, if empty vector or index out of range
+        TVectorIterator<T> defaultIter;
+        return defaultIter;
+    }
+
+    T* tempArr = new T[this->capacity];
+    int j = 0;
+    for(int i = 0; i < this->size; i++) {
+        if(pos.index == i) {
+            i += 1;
+        }
+        tempArr[j] = this->array[i];
+        j++;
+    }
+    delete [] this->array;
+    this->array = tempArr;
+    tempArr = nullptr;
+    pos.ptr = this->array;
+
+    std::cout << "pos.index: " << pos.index << ", this->array[pos.index]: " << this->array[pos.index] << std::endl; 
+    this->size--;
+    pos.vsize = this->size;
+    return pos;
+    
+    // returned iterator set to the next data element after deleted one
 }
 
 
 template <typename T>
 TVectorIterator<T> TVector<T>::Remove(TVectorIterator<T> pos1, TVectorIterator<T> pos2){
 
+    if(this->size == 0 || pos1.index > this->capacity - 1) {
+        // return default iterator, if empty vector or first index out of range
+        TVectorIterator<T> defaultIter;
+        return defaultIter;
+    }
+
+    if(pos2.index - pos1.index == 1) {
+        return Remove(pos1);
+    }
+    // if pos2 iterator index is before the pos1 iterator or is on the same element, return pos1 iterator
+    if(pos2.index - pos1.index <= 0 || pos2.index == 0) {
+        return pos1;
+    }
+
+    T* tempArr = new T[this->capacity];
+    int start = pos1.index;
+    int end = pos2.index;
+    if(pos2.index > this->capacity - 1) {
+        int end = this->capacity - 1;
+    }
+    int j = 0;
+    // while loop iterates i until we reach end of delete range
+    for(int i = 0; i < this->size; i++) {
+        if(start == i) {
+            while(i != end) {
+                i += 1;
+            }
+        }
+        tempArr[j] = this->array[i];
+        j++;
+    }
+
+    delete [] this->array;
+    this->array = tempArr;
+    tempArr = nullptr;
+    pos1.ptr = this->array;
+
+    this->size -= pos2.index - pos1.index;
+    pos1.vsize = this->size;
+    return pos1;
+    
+    // returned iterator set to the next data element after the one deleted last
 }
 
 
@@ -281,7 +349,9 @@ template <typename T>
 TVectorIterator<T> TVector<T>::GetIterator() const {
     std::cout << "Return Iterator to first item" << std::endl;
     TVectorIterator<T> temp;
-    temp.ptr = this->array;
+    if(this->size > 0) {
+        temp.ptr = this->array;
+    }
     temp.index = 0;
     temp.vsize = this->size;
     return temp;
@@ -292,8 +362,11 @@ template <typename T>
 TVectorIterator<T> TVector<T>::GetIteratorEnd() const {
     std::cout << "Return Iterator to last item" << std::endl;
     TVectorIterator<T> temp;
-    temp.ptr = this->array;
-    temp.index = this->size - 1;
+    temp.index = 0;
+    if(this->size > 0) {
+        temp.ptr = this->array;
+        temp.index = this->size - 1;
+    }
     temp.vsize = this->size;
     return temp;
 }
@@ -305,7 +378,7 @@ TVectorIterator<T>::TVectorIterator() {
     std::cout << "Default Iterator Constructor" << std::endl;
     this->index;
     this->vsize;
-    this->ptr;
+    this->ptr = nullptr;
 }
 
 template <typename T>
