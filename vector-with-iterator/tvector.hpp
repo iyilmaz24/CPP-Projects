@@ -184,29 +184,24 @@ TVector<T> operator+(const TVector<T>& t1, const TVector<T>& t2) {
     // std::cout << "operator+" << std::endl;
     TVector<T> temp;
     temp.SetCapacity(t1.GetSize() + t2.GetSize() + 10);
-    TVectorIterator<T> tempIter = temp.GetIterator();
 
     TVectorIterator<T> t1Iter = t1.GetIterator();
     while(t1Iter.HasNext()) {
-        temp.Insert(tempIter, t1Iter.GetData());
-        tempIter.Next();
+        temp.InsertBack(t1Iter.GetData());
         t1Iter.Next();
     }
     if(t1.GetSize() != 0) {
-        temp.Insert(tempIter, t1Iter.GetData());
-        tempIter.Next();
+        temp.InsertBack(t1Iter.GetData());
         t1Iter.Next();   
     }
     
     TVectorIterator<T> t2Iter = t2.GetIterator();
     while(t2Iter.HasNext()) {
-        temp.Insert(tempIter, t2Iter.GetData());
-        tempIter.Next();
+        temp.InsertBack(t2Iter.GetData());
         t2Iter.Next();
     }
     if(t2.GetSize() != 0) {
-        temp.Insert(tempIter, t2Iter.GetData());
-        tempIter.Next();
+        temp.InsertBack(t2Iter.GetData());
         t2Iter.Next();   
     }
 
@@ -290,6 +285,9 @@ TVectorIterator<T> TVector<T>::Remove(TVectorIterator<T> pos) {
     // std::cout << "pos.index: " << pos.index << ", this->array[pos.index]: " << this->array[pos.index] << std::endl; 
     this->size--;
     pos.vsize = this->size;
+    if(pos.index == this->size) {
+        pos.index -= 1;
+    }
     return pos;
     
     // returned iterator set to the next data element after deleted one
