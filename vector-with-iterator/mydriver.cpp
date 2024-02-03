@@ -134,9 +134,17 @@ int main() {
     iterv11.GetData();
     v11.Print(cout);
 
+    cout << "vNull testing:" << endl;
+    TVector<int> vNull;
+    TVectorIterator<int> vNI = vNull.GetIterator();
+    cout << "Next, GetData, Previous" << endl;
+    vNI.Next();
+    cout << vNI.GetData() << endl;
+    vNI.Previous();
+    cout << vNI.HasNext() << " and " << vNI.HasPrevious() << endl;
+
     return 0;
 }
 
 // valgrind --leak-check=full -v ./vec.x
-// g++6 mydriver.cpp -o vec.x
-
+// g++6 demoDriver.cpp -o vec.x
