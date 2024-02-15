@@ -20,6 +20,7 @@ cop4530 :: List<T> :: List(int num, const T& val) {
         if(i == 0) {
             this->head->next = new Node(val);
             this->tail->prev = this->head->next;
+            this->theSize += 1;
             continue;
         }
         Node* temp = this->head->next;
@@ -62,7 +63,11 @@ cop4530::List<T>& cop4530::List<T>::operator=(List &&rhs) {
 template <typename T>
 cop4530 :: List<T> :: ~List() {
     cout << "Destructor Called" << endl;
-
+    if(this->theSize > 0) {
+        this->clear();
+    }
+    delete this->head;         
+    delete this->tail;  
 };
 
 template <typename T>
@@ -97,6 +102,8 @@ void cop4530::List<T>::clear() {
         Node* prev = curr;
         curr = curr->next;
         delete prev;
+        prev = nullptr;
+        this->theSize -= 1;
     }
 };
 
@@ -185,11 +192,25 @@ void cop4530::List<T>::push_back(T&& val) {
 };
 template <typename T>
 void cop4530 :: List<T> :: pop_front() {
-    
+    if(this->head->next != nullptr) {
+        Node* currentHead = this->head->next;
+        this->head->next = this->head->next->next;
+        this->head->next->prev = nullptr;
+        delete currentHead;
+        currentHead = nullptr;
+        this->theSize -= 1;
+    }
 };
 template <typename T>
 void cop4530 :: List<T> :: pop_back() {
-    
+    if(this->tail->prev != nullptr) {
+        Node* currentTail = this->tail->prev;
+        this->tail->prev = this->tail->prev->prev;
+        this->tail->prev->next = nullptr;
+        delete currentTail;
+        currentTail = nullptr;
+        this->theSize -= 1;
+    }
 };
 template <typename T>
 void cop4530 :: List<T> :: remove(const T& val) {
@@ -197,8 +218,11 @@ void cop4530 :: List<T> :: remove(const T& val) {
 };
 template <typename T> 
 void cop4530::List<T>::print(std::ostream &os, char ofc) const {
-    Node* curr = this->head->next;
+    if(this->theSize == 0) {
+        return;
+    }
 
+    Node* curr = this->head->next;
     while(curr != nullptr) {
         cout << curr->data << ofc;
         curr = curr->next;
