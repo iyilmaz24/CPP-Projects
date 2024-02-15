@@ -19,7 +19,7 @@ cop4530 :: List<T> :: List(int num, const T& val) {
     for(int i = 0; i < num; i++) {
         if(i == 0) {
             this->head->next = new Node(val);
-            this->tail->next = this->head->next;
+            this->tail->prev = this->head->next;
             continue;
         }
         Node* temp = this->head->next;
@@ -62,6 +62,7 @@ cop4530::List<T>& cop4530::List<T>::operator=(List &&rhs) {
 template <typename T>
 cop4530 :: List<T> :: ~List() {
     cout << "Destructor Called" << endl;
+
 };
 
 template <typename T>
@@ -83,23 +84,54 @@ bool cop4530::List<T>::empty() const {
 };
 
 template <typename T>
+void cop4530::List<T>::clear() { 
+    auto curr = this->begin();
+    while(curr.current->next != nullptr) {
+        auto prev = curr;
+        curr++;
+        delete prev.current;
+    }
+    delete curr.current;
+};
+
+template <typename T>
+void cop4530::List<T>::reverse() { 
+    if(this->head->next == nullptr) {
+        return;
+    }
+    Node* temp = this->head->next;
+    this->head->next = this->tail->prev;
+    this->tail->prev = temp;
+
+    Node* curr = this->head->next;
+    while(curr != nullptr) {
+        Node* prev = curr;
+        Node* prevNext = prev->next;
+        prev->next = prev->prev;
+        prev->prev = prevNext;
+        curr = curr->next;
+    }
+
+};
+
+template <typename T>
 T& cop4530::List<T>::front() {
     return this->head->next->data;
-}
+};
 
 template <typename T>
 const T& cop4530::List<T>::front() const {
-    return &(this->tail->next->data);
+    return &(this->head->next->data);
 };
 
 template <typename T>
 T& cop4530::List<T>::back() {
-    return this->tail->next->data;
+    return this->tail->prev->data;
 };
 
 template <typename T>
 const T& cop4530::List<T>::back() const {
-    return &(this->tail->next->data);
+    return &(this->tail->prev->data);
 };
 
 
@@ -117,22 +149,22 @@ void cop4530::List<T>::push_front(T &&val) {
 
 template<typename T> 
 void cop4530::List<T>::push_back(const T &val) {
-    Node* currentTail = this->tail->next;
+    Node* currentTail = this->tail->prev;
     Node* newNode = new Node(val, currentTail, nullptr);
 
     currentTail->next = newNode;
-    this->tail->next = newNode;
+    this->tail->prev = newNode;
     this->theSize += 1;
     // cout << val << " pushed to the back (COPY)" << endl;
 };
 
 template<typename T> 
 void cop4530::List<T>::push_back(T&& val) {
-    Node* currentTail = this->tail->next;
+    Node* currentTail = this->tail->prev;
     Node* newNode = new Node(val, currentTail, nullptr);
 
     currentTail->next = newNode;
-    this->tail->next = newNode;
+    this->tail->prev = newNode;
     this->theSize += 1;
     // cout << val << " pushed to the back (MOVE)" << endl;
 };
