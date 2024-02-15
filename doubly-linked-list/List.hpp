@@ -8,8 +8,6 @@ template <typename T>
 cop4530 :: List<T> :: List() {
     cout << "Default Constructor Called" << endl;
     this->init();
-    cout << "size: " << this->theSize << endl;
-    cout << "head: " << this->head->data << endl;
 };
 
 template <typename T>
@@ -17,33 +15,38 @@ cop4530 :: List<T> :: List(int num, const T& val) {
     cout << "Constructing List of 'num' elements initialized with value 'val' (num, val)" << endl;
     this->init();
     for(int i = 0; i < num; i++) {
-        if(i == 0) {
-            this->head->next = new Node(val);
-            this->tail->prev = this->head->next;
-            this->theSize += 1;
-            continue;
-        }
-        Node* temp = this->head->next;
-        this->head->next = new Node(val, nullptr, temp);
-        temp->prev = this->head->next;
-        this->theSize += 1;
+        // if(i == 0) {
+        //     this->head->next = new Node(val);
+        //     this->tail->prev = this->head->next;
+        //     this->theSize += 1;
+        //     continue;
+        // }
+        this->push_front(val);
+        // Node* temp = this->head->next;
+        // this->head->next = new Node(val, nullptr, temp);
+        // temp->prev = this->head->next;
+        // this->theSize += 1;
     }
 };
 
-// template <typename T>
-// cop4530 :: List<T> :: List(const List &rhs) {
-//     cout << "Copy Constructor Called" << endl;
-//     this->init();
-//     this->theSize = rhs.theSize;
+template <typename T>
+cop4530 :: List<T> :: List(const List& rhs) {
+    cout << "Copy Constructor Called" << endl;
+    this->init();
+    auto iter = rhs.begin();
 
-//     iter = rhs.begin();
-//     while(iter != nullptr) {
-//         this->push_back((*iter)->data);
-//         iter++;
-//     }
-//     iter--;
-//     this->tail->next = (*iter);    
-// };
+    for(int i = 0; i < rhs.theSize; i++) {
+        cout << "pushing back: " << *iter << endl;
+        this->push_back(*iter);
+        cout << "pushed back" << endl;
+        cout << "theSize: " << this->theSize << endl;
+        if(i == rhs.theSize - 1) {
+            break;
+        }    
+        iter++; 
+    }
+ 
+};
 
 template <typename T>
 cop4530 :: List<T> :: List(List &&rhs) {
@@ -152,6 +155,12 @@ const T& cop4530::List<T>::back() const {
 
 template <typename T> 
 void cop4530::List<T>::push_front(const T& val) {
+    if(this->theSize == 0) {
+        this->head->next = new Node(val);
+        this->tail->prev = this->head->next;
+        this->theSize += 1;
+        return;
+    }
     Node* currentHead = this->head->next;
     Node* newNode = new Node(val, nullptr, currentHead);
 
@@ -162,6 +171,12 @@ void cop4530::List<T>::push_front(const T& val) {
 };
 template <typename T> 
 void cop4530::List<T>::push_front(T&& val) {
+    if(this->theSize == 0) {
+        this->head->next = new Node(val);
+        this->tail->prev = this->head->next;
+        this->theSize += 1;
+        return;
+    }
     Node* currentHead = this->head->next;
     Node* newNode = new Node(val, nullptr, currentHead);
 
@@ -172,6 +187,12 @@ void cop4530::List<T>::push_front(T&& val) {
 };
 template <typename T> 
 void cop4530::List<T>::push_back(const T& val) {
+    if(this->theSize == 0) {
+        this->head->next = new Node(val);
+        this->tail->prev = this->head->next;
+        this->theSize += 1;
+        return;
+    }
     Node* currentTail = this->tail->prev;
     Node* newNode = new Node(val, currentTail, nullptr);
 
@@ -182,6 +203,12 @@ void cop4530::List<T>::push_back(const T& val) {
 };
 template <typename T> 
 void cop4530::List<T>::push_back(T&& val) {
+    if(this->theSize == 0) {
+        this->head->next = new Node(val);
+        this->tail->prev = this->head->next;
+        this->theSize += 1;
+        return;
+    }
     Node* currentTail = this->tail->prev;
     Node* newNode = new Node(val, currentTail, nullptr);
 
@@ -193,6 +220,7 @@ void cop4530::List<T>::push_back(T&& val) {
 template <typename T>
 void cop4530 :: List<T> :: pop_front() {
     if(this->head->next != nullptr) {
+        cout << "pop_front head->next" << endl;
         Node* currentHead = this->head->next;
         this->head->next = this->head->next->next;
         this->head->next->prev = nullptr;
@@ -204,6 +232,7 @@ void cop4530 :: List<T> :: pop_front() {
 template <typename T>
 void cop4530 :: List<T> :: pop_back() {
     if(this->tail->prev != nullptr) {
+        cout << "pop_back tail->prev" << endl;
         Node* currentTail = this->tail->prev;
         this->tail->prev = this->tail->prev->prev;
         this->tail->prev->next = nullptr;
@@ -231,6 +260,30 @@ void cop4530::List<T>::print(std::ostream &os, char ofc) const {
 
 
 
+template <typename T>
+typename cop4530::List<T>::iterator cop4530::List<T>::end() {
+
+}
+template <typename T>
+typename cop4530::List<T>::const_iterator cop4530::List<T>::end() const {
+    
+}
+template <typename T>
+typename cop4530::List<T>::iterator cop4530::List<T>::insert(iterator itr, const T& val) {
+
+}
+template <typename T>
+typename cop4530::List<T>::iterator cop4530::List<T>::insert(iterator itr, T && val) {
+
+}
+template <typename T>
+typename cop4530::List<T>::iterator cop4530::List<T>::erase(iterator itr) {
+
+}
+template <typename T>
+typename cop4530::List<T>::iterator cop4530::List<T>::erase(iterator start, iterator end) {
+
+}
 
 
 template<typename T> 
