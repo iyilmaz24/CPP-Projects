@@ -155,19 +155,33 @@ const T& cop4530 :: List<T> :: const_iterator :: operator*() const {
 }
 template <typename T>
 typename cop4530::List<T>::const_iterator& cop4530 :: List<T> :: const_iterator :: operator++() {
-
+    if(this->current->next != nullptr) {
+        this->current = this->current->next;
+    }
+    return *this;
 }
 template <typename T>
 typename cop4530::List<T>::const_iterator cop4530 :: List<T> :: const_iterator :: operator++(int) {
-    
+    if(this->current->next != nullptr) {
+        cop4530::List<T>::const_iterator iter = *this;
+        ++(*this);
+        return iter;
+    }
 }
 template <typename T>
 typename cop4530::List<T>::const_iterator& cop4530 :: List<T> :: const_iterator :: operator--() {
-
+    if(this->current->prev != nullptr) {
+        this->current = this->current->prev;
+    }
+    return *this;
 }
 template <typename T>
 typename cop4530::List<T>::const_iterator cop4530 :: List<T> :: const_iterator :: operator--(int) {
-    
+    if(this->current->prev != nullptr) {
+        cop4530::List<T>::const_iterator iter = *this;
+        --(*this);
+        return iter;
+    }
 }
 template <typename T>
 bool cop4530 :: List<T> :: const_iterator :: operator==(const const_iterator& rhs) const {
