@@ -184,10 +184,10 @@ cop4530 :: List<T> :: iterator :: iterator(Node* p) {
 }
 template <typename T>
 T& cop4530 :: List<T> :: iterator :: operator*() {
-    return cop4530::List<T>::const_iterator::retrieve();
+    return cop4530 :: List<T> :: const_iterator :: retrieve();
 }
 template <typename T>
 const T& cop4530 :: List<T> :: iterator :: operator*() const {
-    return cop4530::List<T>::const_iterator::operator*();
+    return cop4530 :: List<T> :: const_iterator :: operator*();
 }
 
