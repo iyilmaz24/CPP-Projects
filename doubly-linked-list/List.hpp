@@ -171,11 +171,11 @@ typename cop4530::List<T>::const_iterator cop4530 :: List<T> :: const_iterator :
 }
 template <typename T>
 bool cop4530 :: List<T> :: const_iterator :: operator==(const const_iterator& rhs) const {
-    return ( this->current == rhs ? true : false)
+    return (this->current == rhs->current);
 }
 template <typename T>
 bool cop4530 :: List<T> :: const_iterator :: operator!=(const const_iterator& rhs) const {
-    return ( this->current != rhs ? true : false)
+    return (*this != rhs);
 }
 
 
@@ -210,28 +210,19 @@ const T& cop4530 :: List<T> :: iterator :: operator*() const {
 
 
 
+template <typename T>
+bool cop4530::operator==(const List<T>& lhs, const List<T>& rhs) {
+    return (lhs == rhs);
+}
 
+template<typename T>
+bool cop4530::operator!=(const List<T>& lhs, const List<T>& rhs) {
+    return (!(lhs != rhs));
+}
 
+template<typename T> 
+std::ostream& cop4530::operator<<(std::ostream &os, const cop4530::List<T> &l) {
+    l.print(os);
+    return os;
+};
 
-//    // overloading comparison operators
-//    template <typename T>
-//       bool operator==(const List<T> & lhs, const List<T> &rhs);
-
-//    template <typename T>
-//       bool operator!=(const List<T> & lhs, const List<T> &rhs);
-
-//    // overloading output operator
-//    template <typename T>
-//       std::ostream & operator<<(std::ostream &os, const List<T> &l);
-
-
-// template<typename T> 
-// std::ostream &cop4530::operator<<(std::ostream &os, const cop4530::List<T> &l) {
-
-//     for(int i = 0; i < l.theSize; i ++) {
-//         GET ITERATOR
-//         os << ITERATOR RETURNS DATA HERE << " ";
-//         ITERATOR MOVES FORWARD;
-//     }
-//     return os;
-// };
