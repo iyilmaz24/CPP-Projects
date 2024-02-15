@@ -72,15 +72,38 @@ void cop4530 :: List<T> :: init() {
     cout << "init done" << endl;   
 }
 
-template<typename T> 
+template <typename T> 
 int cop4530::List<T>::size() const {
     return this->theSize;
 };
 
-template<typename T> 
+template <typename T> 
 bool cop4530::List<T>::empty() const {
     return this->theSize == 0 ? true : false;
 };
+
+template <typename T>
+T& cop4530::List<T>::front() {
+    return this->head->next->data;
+}
+
+template <typename T>
+const T& cop4530::List<T>::front() const {
+    return &(this->tail->next->data);
+};
+
+template <typename T>
+T& cop4530::List<T>::back() {
+    return this->tail->next->data;
+};
+
+template <typename T>
+const T& cop4530::List<T>::back() const {
+    return &(this->tail->next->data);
+};
+
+
+
 
 template<typename T> 
 void cop4530::List<T>::push_front(const T &val) {
