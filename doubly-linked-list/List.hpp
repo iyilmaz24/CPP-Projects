@@ -6,32 +6,22 @@ using namespace std;
 
 template <typename T>
 cop4530 :: List<T> :: List() {
-    cout << "Default Constructor Called" << endl;
+    // cout << "Default Constructor Called" << endl;
     this->init();
 };
 
 template <typename T>
 cop4530 :: List<T> :: List(int num, const T& val) {
-    cout << "Constructing List of 'num' elements initialized with value 'val' (num, val)" << endl;
+    // cout << "Constructing List of 'num' elements initialized with value 'val' (num, val)" << endl;
     this->init();
     for(int i = 0; i < num; i++) {
-        // if(i == 0) {
-        //     this->head->next = new Node(val);
-        //     this->tail->prev = this->head->next;
-        //     this->theSize += 1;
-        //     continue;
-        // }
         this->push_front(val);
-        // Node* temp = this->head->next;
-        // this->head->next = new Node(val, nullptr, temp);
-        // temp->prev = this->head->next;
-        // this->theSize += 1;
     }
 };
 
 template <typename T>
 cop4530 :: List<T> :: List(const List& rhs) {
-    cout << "Copy Constructor Called" << endl;
+    // cout << "Copy Constructor Called" << endl;
     this->init();
     auto iter = rhs.begin();
 
@@ -42,12 +32,9 @@ cop4530 :: List<T> :: List(const List& rhs) {
  
 };
 
-        // if(i == rhs.theSize - 1) {
-        //     break;
-        // }    
 template <typename T>
 cop4530 :: List<T> :: List(List &&rhs) : theSize{rhs.theSize}, head{rhs.head}, tail{rhs.tail} {
-    cout << "Move Constructor Called" << endl;
+    // cout << "Move Constructor Called" << endl;
     rhs.theSize = 0;
     rhs.head = nullptr;
     rhs.tail = nullptr;
@@ -55,7 +42,7 @@ cop4530 :: List<T> :: List(List &&rhs) : theSize{rhs.theSize}, head{rhs.head}, t
 
 template <typename T>
 const cop4530::List<T>& cop4530::List<T>::operator=(const List &rhs) {
-    cout << "Copy Assignment Operator Overload Called" << endl;
+    // cout << "Copy Assignment Operator Overload Called" << endl;
     List copy = rhs;
     std::swap(*this, copy);
     return *this;
@@ -63,7 +50,7 @@ const cop4530::List<T>& cop4530::List<T>::operator=(const List &rhs) {
 
 template <typename T>
 cop4530::List<T>& cop4530::List<T>::operator=(List &&rhs) {
-    cout << "Move Assignment Operator Called" << end;
+    // cout << "Move Assignment Operator Called" << end;
     std::swap(theSize, rhs.theSize);
     std::swap(head, rhs.head);
     std::swap(tail, rhs.tail);
@@ -72,7 +59,7 @@ cop4530::List<T>& cop4530::List<T>::operator=(List &&rhs) {
 
 template <typename T>
 cop4530 :: List<T> :: ~List() {
-    cout << "Destructor Called" << endl;
+    // cout << "Destructor Called" << endl;
     if(this->theSize > 0) {
         this->clear();
     }
@@ -85,7 +72,7 @@ void cop4530 :: List<T> :: init() {
     this->theSize = 0;
     this->head = new Node();         
     this->tail = new Node();    
-    cout << "init done" << endl;   
+    // cout << "init done" << endl;   
 }
 
 template <typename T> 
@@ -100,13 +87,6 @@ bool cop4530::List<T>::empty() const {
 
 template <typename T>
 void cop4530::List<T>::clear() { 
-    // auto curr = this->begin();
-    // while(curr.current->next != nullptr) {
-    //     auto prev = curr;
-    //     curr++;
-    //     delete prev.current;
-    // }
-    // delete curr.current;
     Node* curr = this->head->next;
     while(curr != nullptr) {
         Node* prev = curr;
@@ -227,7 +207,7 @@ void cop4530::List<T>::push_back(T&& val) {
 template <typename T>
 void cop4530 :: List<T> :: pop_front() {
     if(this->head->next != nullptr) {
-        cout << "pop_front head->next: " << this->head->next->data << endl;
+        // cout << "pop_front head->next: " << this->head->next->data << endl;
         Node* currentHead = this->head->next;
         this->head->next = this->head->next->next;
         this->head->next->prev = nullptr;
@@ -239,7 +219,7 @@ void cop4530 :: List<T> :: pop_front() {
 template <typename T>
 void cop4530 :: List<T> :: pop_back() {
     if(this->tail->prev != nullptr) {
-        cout << "pop_back tail->prev: " << this->tail->prev->data << endl;
+        // cout << "pop_back tail->prev: " << this->tail->prev->data << endl;
         Node* currentTail = this->tail->prev;
         this->tail->prev = this->tail->prev->prev;
         this->tail->prev->next = nullptr;
@@ -286,51 +266,64 @@ typename cop4530::List<T>::const_iterator cop4530::List<T>::end() const {
 }
 template <typename T>
 typename cop4530::List<T>::iterator cop4530::List<T>::insert(iterator itr, const T& val) {
-
+    if(itr.current == this->end().current) {
+        this->push_back(val);
+        return itr;
+    }
+    Node* newNode = new Node(val, itr.current, itr.current->next);
+    itr.current->next->prev = newNode;
+    itr.current->next = newNode;
+    this->theSize += 1;
+    return itr;
 }
 template <typename T>
 typename cop4530::List<T>::iterator cop4530::List<T>::insert(iterator itr, T && val) {
-
+    if(itr.current == this->end().current) {
+        this->push_back(val);
+        return itr;
+    }
+    Node* newNode = new Node(val, itr.current, itr.current->next);
+    itr.current->next->prev = newNode;
+    itr.current->next = newNode;
+    this->theSize += 1;
+    return itr;
 }
 template <typename T>
 typename cop4530::List<T>::iterator cop4530::List<T>::erase(iterator itr) {
-    if(itr.current == (this->end()).current) {
-        iterator nextItr;
-        nextItr.current = itr.current->prev;
-        nextItr.current->next = nullptr;
-        this->tail->prev = nextItr.current;
-        delete itr.current;
-        this->theSize -= 1;
+    if(itr.current == this->tail->prev) {
+        auto nextItr = this->end();
+        nextItr--;
+        this->pop_back();
         return nextItr;
     }
-    if(itr.current == (this->begin()).current) {
-        iterator nextItr;
-        nextItr.current = itr.current->next;
-        nextItr.current->prev = nullptr;
-        this->head->next = nextItr.current;
-        delete itr.current;
-        this->theSize -= 1;
-        return nextItr; 
+    else if(itr.current == this->head->next) {
+        auto nextItr = this->begin();
+        nextItr++;
+        this->pop_front();
+        return nextItr;
     }
-    iterator nextItr;
-    nextItr.current = itr.current->next;
-    nextItr.current->prev = itr.current->prev;
-    itr.current->prev->next = nextItr.current;
+    iterator nextItr(itr.current->next);
+    itr--;
+    itr.current->next = nextItr.current;
+
     delete itr.current;
     this->theSize -= 1;
     return nextItr;
 }
 template <typename T>
 typename cop4530::List<T>::iterator cop4530::List<T>::erase(iterator start, iterator end) {
-    for(cop4530::List<T>::iterator curr = start; curr != end; ) {
-        start = erase(start);
+    iterator curr;
+    curr.current = start.current;
+    while(curr.current != end.current) {
+        curr = this->erase(curr);
     }
+    return end;
 }
 
 
 template<typename T> 
 typename cop4530::List<T>::const_iterator cop4530::List<T>::begin() const {
-    cout << "begin() for const_iterator" << endl;
+    // cout << "begin() for const_iterator" << endl;
     const_iterator newIter;
     if(this->theSize != 0) {
         newIter.current = this->head->next;
@@ -398,7 +391,7 @@ bool cop4530 :: List<T> :: const_iterator :: operator!=(const const_iterator& rh
 
 template<typename T> 
 typename cop4530::List<T>::iterator cop4530::List<T>::begin() {
-    cout << "begin() for iterator" << endl;
+    // cout << "begin() for iterator" << endl;
     iterator newIter;
     if(this->theSize != 0) {
         newIter.current = this->head->next;
