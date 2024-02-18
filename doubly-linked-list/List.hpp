@@ -206,32 +206,64 @@ void cop4530::List<T>::push_back(T&& val) {
 };
 template <typename T>
 void cop4530 :: List<T> :: pop_front() {
+    Node* currentHead = this->head->next;
+    if(this->theSize == 1) {
+        this->tail->prev = nullptr;
+        this->head->next = nullptr;
+    }
     if(this->head->next != nullptr) {
-        // cout << "pop_front head->next: " << this->head->next->data << endl;
-        Node* currentHead = this->head->next;
         this->head->next = this->head->next->next;
         this->head->next->prev = nullptr;
-        delete currentHead;
-        currentHead = nullptr;
-        this->theSize -= 1;
     }
+    delete currentHead;
+    currentHead = nullptr;
+    this->theSize -= 1;
 };
 template <typename T>
 void cop4530 :: List<T> :: pop_back() {
-    if(this->tail->prev != nullptr) {
-        // cout << "pop_back tail->prev: " << this->tail->prev->data << endl;
-        Node* currentTail = this->tail->prev;
+    Node* currentTail = this->tail->prev;
+    if(this->theSize == 1) {
+        this->tail->prev = nullptr;
+        this->head->next = nullptr;
+    }
+    else if(this->tail->prev != nullptr) {
         this->tail->prev = this->tail->prev->prev;
         this->tail->prev->next = nullptr;
-        delete currentTail;
-        currentTail = nullptr;
-        this->theSize -= 1;
     }
+    delete currentTail;
+    currentTail = nullptr;
+    this->theSize -= 1;
 };
 template <typename T>
 void cop4530 :: List<T> :: remove(const T& val) {
-    
+    auto itr = this->begin();
+    while(itr.current != (this->end()).current) {
+        if(itr.current->data == val) {
+            itr = this->erase(itr);
+        }
+        else {
+            itr++;
+        }
+    }
+    if((this->end()).current->data == val) {
+        this->pop_back();
+    }
 };
+template<typename T> 
+template<typename PREDICATE> 
+void cop4530 :: List<T> :: remove_if(PREDICATE pred) {
+    auto itr = this->begin();
+    while(itr.current != (this->end()).current)
+    if(pred(itr.current->data) == true) {
+        itr = this->erase(itr);
+    }
+    else {
+        itr++;
+    }
+    if(pred((this->end()).current->data) == true) {
+        this->pop_back();
+    }
+}
 template <typename T> 
 void cop4530::List<T>::print(std::ostream &os, char ofc) const {
     if(this->theSize == 0) {
@@ -292,20 +324,21 @@ template <typename T>
 typename cop4530::List<T>::iterator cop4530::List<T>::erase(iterator itr) {
     if(itr.current == this->tail->prev) {
         auto nextItr = this->end();
-        nextItr--;
+        (this->theSize == 1 ? nextItr : nextItr--);
         this->pop_back();
         return nextItr;
     }
     else if(itr.current == this->head->next) {
         auto nextItr = this->begin();
-        nextItr++;
+        (this->theSize == 1 ? nextItr : nextItr++);
         this->pop_front();
         return nextItr;
     }
-    iterator nextItr(itr.current->next);
-    itr--;
-    itr.current->next = nextItr.current;
-
+    iterator nextItr;
+    nextItr.current = itr.current->next;
+    itr.current->prev->next = nextItr.current;
+    nextItr.current->prev = itr.current->prev;
+    
     delete itr.current;
     this->theSize -= 1;
     return nextItr;
