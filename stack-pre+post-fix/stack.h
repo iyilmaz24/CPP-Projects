@@ -4,40 +4,35 @@
 
 namespace cop4530 {
 
-template<typename T>
+    template<typename T>
     class Stack {
 
-        private:
+            Stack(); // zero-argument constructor   
+            ~Stack(); // destructor
+            Stack (const Stack<T>&); // copy constructor
+            Stack(Stack<T> &&); // move constructor
 
+            Stack<T>& operator=(const Stack <T>&); // copy assignment operator=
+            Stack<T>& operator=(Stack<T> &&); // move assignment operator=
 
-        public:
+            bool empty() const; // true if Stack contains no elements, false otherwise
+            void clear(); // delete all elements from the stack
+            int size() const; // returns the number of elements stored
 
-            Stack() // zero-argument constructor   
-            ~Stack() // destructor
-            Stack (const Stack<T>&) // copy constructor
-            Stack(Stack<T> &&) // move constructor
+            void push(const T& x); // adds x to Stack (copy version)
+            void push(T && x); // adds x to Stack (move version)
 
-            Stack<T>& operator=(const Stack <T>&) // copy assignment operator=
-            Stack<T>& operator=(Stack<T> &&) // move assignment operator=
+            void pop(); // removes and discards the last added element  
 
-            bool empty() const // true if Stack contains no elements, false otherwise
-            void clear() // delete all elements from the stack
-            int size() const // returns the number of elements stored
+            T& top(); // returns reference to most recently added element (as a modifiable L-value)
+            const T& top() const; // accessor that returns most recently added element (as a const reference)  
 
-            void push(const T& x) // adds x to Stack (copy version)
-            void push(T && x) // adds x to Stack (move version)
-
-            void pop() // removes and discards the last added element  
-
-            T& top() // returns reference to most recently added element (as a modifiable L-value)
-            const T& top() const // accessor that returns most recently added element (as a const reference)  
-
-            void print(std::ostream& os, char ofc = ' ') const // print elements of Stack to ostream os
+            void print(std::ostream& os, char ofc = ' ') const; // print elements of Stack to ostream os
             // ofc is the separator between elements when printed out
             // Note that print() prints elements in the opposite order of the Stack 
             // (that is, the oldest element should be printed first)
 
-    };
+};
         template<typename T>
             std::ostream& operator<<(std::ostream& os, const Stack<T>& a); // invokes the print() method to print the Stack<T> a in the specified ostream    
 
