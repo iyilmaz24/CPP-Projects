@@ -1,11 +1,17 @@
 #ifndef STACK_H
 #define STACK_H
+#include<vector>
+#include<iostream>
 
 
 namespace cop4530 {
 
     template<typename T>
     class Stack {
+
+        public:
+            std::vector<T> stack;
+            int s_size;
 
             Stack(); // zero-argument constructor   
             ~Stack(); // destructor
@@ -31,6 +37,7 @@ namespace cop4530 {
             // ofc is the separator between elements when printed out
             // Note that print() prints elements in the opposite order of the Stack 
             // (that is, the oldest element should be printed first)
+
 
 };
         template<typename T>
