@@ -2,12 +2,14 @@
 
 template<typename T, class container>
 cop4530::Stack<T, container>:: Stack() {
+    this->capacity = 0;
     this->s_size = 0;
 };
 template<typename T, class container>
 cop4530::Stack<T, container>:: Stack(const Stack<T>& rhs) {
     // std::cout << "copy constructor called" << std::endl;
     this->s_size = 0;
+    this->capacity = 0;
     for(int i = 0; i < rhs.s_size; i++) {
         this->push(rhs.stack[i]);
     }
@@ -16,12 +18,14 @@ template<typename T, class container>
 cop4530::Stack<T, container>:: Stack(Stack<T>&& rhs) {
     // std::cout << "move constructor called" << std::endl;
     this->s_size = rhs.s_size;
+    this->capacity = rhs.capacity;
     stack = rhs.stack;
 };
 template<typename T, class container>
 Stack<T>& cop4530::Stack<T, container>:: operator=(const Stack<T>& rhs) {
     // std::cout << "copy operator called" << std::endl;
     this->s_size = 0;
+    this->capacity = 0;
     for(int i = 0; i < rhs.s_size; i++) {
         this->push(rhs.stack[i]);
     }
@@ -31,6 +35,7 @@ template<typename T, class container>
 Stack<T>& cop4530::Stack<T, container>:: operator=(Stack<T>&& rhs) {
     // std::cout << "move operator called" << std::endl;
     std::swap(s_size, rhs.s_size);
+    std::swap(capacity, rhs.capacity);
     std::swap(stack, rhs.stack);
     return *this;
 };
@@ -48,6 +53,7 @@ template<typename T, class container>
 void cop4530::Stack<T, container>:: clear() {
     this->stack.clear();
     this->s_size = 0;
+    this->capacity = 0;
 };
 template<typename T, class container>
 int cop4530::Stack<T, container>:: size() const {
@@ -57,17 +63,27 @@ int cop4530::Stack<T, container>:: size() const {
 
 template<typename T, class container>
 void cop4530::Stack<T, container>:: push(const T& x) {
-    this->stack.push_back(x);
+    if(this->capacity == this->s_size) {
+        stack.push_back(x);
+        this->capacity += 1;
+    }
+    this->stack[this->s_size] = x;
     this->s_size += 1;
 };
 template<typename T, class container>
 void cop4530::Stack<T, container>:: push(T && x) {
-    this->stack.push_back(x);
+    if(this->capacity == this->s_size) {
+        stack.push_back(x);
+        this->capacity += 1;
+    }
+    this->stack[this->s_size] = x;
     this->s_size += 1;
 };
 template<typename T, class container>
 void cop4530::Stack<T, container>:: pop() {
-    this->s_size -= 1;
+    if(this->s_size > 0) {
+        this->s_size -= 1;
+    }
 };
 template<typename T, class container>
 T& cop4530::Stack<T, container>:: top() {

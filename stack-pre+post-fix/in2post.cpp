@@ -19,11 +19,16 @@ int main() {
         cout << "Enter infix expression ('exit' to quit):" << endl;
         userInput.clear();
         getline(cin, userInput);
+        if(userInput == "exit") { break; }
 
         vector<string> tokens = splitTokens(userInput);
+        if(tokens[0] == "false") {
+            cout << "please provide valid infix expression!" << endl;
+            continue;
+        }
+
         printVector(tokens);
         vector<string> postFix = turnPostFix(tokens);
-    
 
         cout << "Postfix expression: ";
         printVector(postFix);
@@ -68,27 +73,9 @@ vector<string> splitTokens(string userInput) {
         }
         else if(userInput[i] != ' ') {
             word += userInput[i];
-            // if(userInput[i] == '(' || userInput[i] == ')') {
-            //     if(word.length() != 0) {
-            //         returnTokens.push_back(word);
-            //         word = "";
-            //     }
-            //     word += userInput[i];
-            //     returnTokens.push_back(word);
-            //     word = "";
-            // }
-            // else {
-            //     word += userInput[i];
-            //     if(i == userInput.length() - 1) {
-            //         returnTokens.push_back(word);      
-            //     }
-            // }   
         }
-        // else if(i == userInput.length() - 1) {
-        //     word += userInput[i];
-        //     returnTokens.push_back(word);      
-        // }
     }
+
     if(opPrec(word) == 4) {
         (word == "(") ? openPs += 1 : openPs -= 1;
         if(openPs != 0) { // if parantheses not balanced, return false
@@ -96,15 +83,16 @@ vector<string> splitTokens(string userInput) {
             return falseVector; 
         }
     }
-    if(word != ")" || opPrec(word) != 0) {
+    if(word != ")" && opPrec(word) != 0) {
         // if last char is not operand or ), return same input
-            cout << "last char is not operand or )" << endl;
+        cout << "last char is not operand or )" << endl;
         return falseVector;
     }
     returnTokens.push_back(word);
 
     return returnTokens;
 }
+
 
 void printVector(vector<string> V) {
     for(int i = 0; i < V.size(); i++) {
@@ -114,6 +102,7 @@ void printVector(vector<string> V) {
         cout << V[i] << " ";
     }
 }
+
 
 int opPrec(string c) {
     if(c == "(" || c == ")") {
@@ -134,23 +123,67 @@ int opPrec(string c) {
     return 0;
 }
 
+
 vector<string> turnPostFix(vector<string> tokens) {
     vector<string> pFixExp;
+    Stack<string> stack;
     bool evalFlag = true;
 
-    for(string token : tokens) {
-        cout << opPrec(token) << endl;
-
-        // if two tokens are back to back operands or operators, return tokens
-        // if token is a ) and previous is an operator, return tokens
-        // no weird parantheses " )( ", return tokens
-
-
-        if( !(isalnum(token[0])) ) {
-            evalFlag = false; // if variable present, trigger no evaluation flag
+    for(int i = 0; i < tokens.size(); i++) {
+        if(opPrec(tokens[i]) == 0) {
+            pFixExp.push_back(tokens[i]); 
+            if(isalpha(tokens[i][0])) {
+                evalFlag = false;  // if variable present, trigger no evaluation flag
+            }
+            continue;
         }
+
+        if(tokens[i] == "(") {
+            stack.push(tokens[i]); // if '(', push onto stack
+            continue;
+        }
+
+        if(tokens[i] == ")") {
+            if(opPrec(tokens[i - 1]) != 0 && tokens[i - 1] != ")") {
+                cout << "invalid operator or '(' found directly before ')'" << endl;
+                return tokens; // if token is a ) and previous is an operator, return tokens
+            }
+
+            while(stack.top() != "(" && stack.empty() == false) {
+                pFixExp.push_back(stack.top());
+                stack.pop();
+            }
+            if(stack.empty() == true) {
+                cout << "parantheses not in correct order" << endl;
+                return tokens; // ex. "( ) ) ("      
+            }
+            stack.pop(); // pop the '('
+            continue;
+        }
+
+        if(opPrec(tokens[i]) != 0) { // if token is an operator
+            if(stack.empty() == true) {
+                stack.push(tokens[i]);
+                continue;
+            }
+            while(stack.top() != "(" && opPrec(stack.top()) > opPrec(tokens[i]) && stack.empty() == false) {
+                pFixExp.push_back(stack.top()); // pop stack until empty or higher precedence operator seen
+                stack.pop();
+            }
+            stack.push(tokens[i]);
+            continue;
+        }
+
+// if two tokens are back to back operands or operators, return tokens
+
     }
 
+    while(stack.empty() == false) {
+        if(stack.top() != "(") {
+            pFixExp.push_back(stack.top());
+        }
+        stack.pop(); // empty stack of operators after reading entire token stream
+    }
     if(evalFlag == false) {
         pFixExp.push_back("false");
     }
@@ -162,4 +195,5 @@ string evalExp(vector<string> pFixExp) {
 }
 
 
+// valgrind --leak-check=full --track-origins=yes -v ./stack.x
 // g++ -g in2post.cpp -o stack.x

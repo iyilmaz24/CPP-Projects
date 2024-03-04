@@ -12,6 +12,7 @@ namespace cop4530 {
         public:
             container stack;
             int s_size;
+            int capacity;
 
             Stack(); // zero-argument constructor   
             ~Stack(); // destructor
