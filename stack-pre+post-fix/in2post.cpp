@@ -16,7 +16,7 @@ int main() {
 
     string userInput = "";
     while (userInput != "exit") {
-        cout << "Enter infix expression ('exit' to quit):" << endl;
+        cout << endl << "Enter infix expression ('exit' to quit):" << endl;
         userInput.clear();
         getline(cin, userInput);
         if(userInput == "exit") { break; }
@@ -27,17 +27,17 @@ int main() {
             continue;
         }
 
-        printVector(tokens);
         vector<string> postFix = turnPostFix(tokens);
-
-        cout << "Postfix expression: ";
-        printVector(postFix);
-        cout << endl;
+        cout << "Postfix expression: "; printVector(postFix); cout << endl;
 
         if(postFix.back() == "false") {
             cout << "Postfix evaluation: "; printVector(postFix);
             cout << " = "; printVector(postFix); cout << endl;
-        } else {
+        }
+        else if (postFix.back() == "error") {
+            cout << "please provide valid infix for conversion" << endl;
+        }
+        else {
             cout << "Postfix evaluation: "; printVector(postFix);
             cout << " = " << evalExp(postFix) << endl;
         }
@@ -56,10 +56,9 @@ vector<string> splitTokens(string userInput) {
 
     if(opPrec(word) != 0 && word != "(") {
         // if first token is not a ( or operand, return false
-        cout << "first token is not a ( or operand" << endl;
+        cout << "erorr, first token is not a ( or operand" << endl;
         return falseVector;
     }
-
     word = "";
     int openPs = 0; // check for parantheses balance
 
@@ -78,14 +77,14 @@ vector<string> splitTokens(string userInput) {
 
     if(opPrec(word) == 4) {
         (word == "(") ? openPs += 1 : openPs -= 1;
-        if(openPs != 0) { // if parantheses not balanced, return false
-            cout << "parantheses not balanced" << endl;
-            return falseVector; 
-        }
+    }
+    if(openPs != 0) { // if parantheses not balanced, return false
+        cout << "error, parantheses not balanced" << endl;
+        return falseVector; 
     }
     if(word != ")" && opPrec(word) != 0) {
         // if last char is not operand or ), return same input
-        cout << "last char is not operand or )" << endl;
+        cout << "error, last char is not operand or )" << endl;
         return falseVector;
     }
     returnTokens.push_back(word);
@@ -114,9 +113,6 @@ int opPrec(string c) {
     if(c == "/" || c == "*") {
         return 2;
     }
-    if(c == "/" || c == "*") {
-        return 2;
-    }
     if (c == "+" || c == "-") {
         return 1;
     }
@@ -124,12 +120,46 @@ int opPrec(string c) {
 }
 
 
+float opCalc(string c, string leftS, string rightS) {
+    float left = stof(leftS); float right = stof(rightS);
+    // cout << left << " " << c << " " << right << endl;
+
+    if(c == "^") {
+        float result;
+        for (int i = 0; i < right; i++) {
+            result *= left;
+        }
+        return result;
+    }
+    else if(c == "/") {
+        return left / right;
+    }
+    else if (c == "*") {
+        return left * right;
+    }
+    else if (c == "-") {
+        return left - right;
+    }
+    else if (c == "+") {
+        return left + right;
+    }
+    return 0.0;
+}
+
+
 vector<string> turnPostFix(vector<string> tokens) {
     vector<string> pFixExp;
     Stack<string> stack;
     bool evalFlag = true;
+    vector<string> errorVector{"error"};
 
     for(int i = 0; i < tokens.size(); i++) {
+
+        if(i != 0 && opPrec(tokens[i]) == opPrec(tokens[i - 1]) && opPrec(tokens[i]) != 4) {
+            cout << "error, back to back operands or operators" << endl;
+            return errorVector; // if back to back operands or operators, return errorVector
+        }
+
         if(opPrec(tokens[i]) == 0) {
             pFixExp.push_back(tokens[i]); 
             if(isalpha(tokens[i][0])) {
@@ -145,17 +175,16 @@ vector<string> turnPostFix(vector<string> tokens) {
 
         if(tokens[i] == ")") {
             if(opPrec(tokens[i - 1]) != 0 && tokens[i - 1] != ")") {
-                cout << "invalid operator or '(' found directly before ')'" << endl;
-                return tokens; // if token is a ) and previous is an operator, return tokens
+                cout << "error, operator or '(' found directly before ')'" << endl;
+                return errorVector; // if token is a ) and previous is an operator, return errorVector
             }
-
             while(stack.top() != "(" && stack.empty() == false) {
                 pFixExp.push_back(stack.top());
                 stack.pop();
             }
             if(stack.empty() == true) {
-                cout << "parantheses not in correct order" << endl;
-                return tokens; // ex. "( ) ) ("      
+                cout << "error, parantheses not in correct order, ex. '( ) ) ('" << endl;
+                return errorVector; // ex. "( ) ) ("      
             }
             stack.pop(); // pop the '('
             continue;
@@ -166,16 +195,13 @@ vector<string> turnPostFix(vector<string> tokens) {
                 stack.push(tokens[i]);
                 continue;
             }
-            while(stack.top() != "(" && opPrec(stack.top()) > opPrec(tokens[i]) && stack.empty() == false) {
+            while(stack.empty() == false && stack.top() != "(" && opPrec(stack.top()) > opPrec(tokens[i])) {
                 pFixExp.push_back(stack.top()); // pop stack until empty or higher precedence operator seen
                 stack.pop();
             }
             stack.push(tokens[i]);
             continue;
         }
-
-// if two tokens are back to back operands or operators, return tokens
-
     }
 
     while(stack.empty() == false) {
@@ -191,7 +217,25 @@ vector<string> turnPostFix(vector<string> tokens) {
 }
 
 string evalExp(vector<string> pFixExp) {
-    return "evalExp";
+
+    Stack<string> stack;
+    string evalExp = "";
+
+    for(int i = 0; i < pFixExp.size(); i++) {
+        // cout << "stack:" << stack << "|" << endl;
+
+        if(opPrec(pFixExp[i]) == 0) {
+            stack.push(pFixExp[i]);
+        }
+        else if(opPrec(pFixExp[i]) > 0) {
+            string right = stack.top(); stack.pop();
+            string left = stack.top(); stack.pop();
+            stack.push(to_string(opCalc(pFixExp[i], left, right)));
+        }
+    }
+
+    evalExp = stack.top();
+    return evalExp;
 }
 
 
