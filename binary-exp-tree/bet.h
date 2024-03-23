@@ -4,11 +4,23 @@
 
 class BET {
 
-    private:
-        
+    struct BinaryNode {
 
+        string element;
+        BinaryNode* left;
+        BinaryNode* right;
+
+        BinaryNode(const string& e = string{}, BinaryNode *l = nullptr, BinaryNode *r = nullptr) 
+            : element{e}, left{l}, right{r} {}
+
+    };
+        
     public:
         BET();
+
+
+    private:
+    
 
 };
 
