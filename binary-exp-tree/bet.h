@@ -1,7 +1,7 @@
 #ifndef BE_TREE_H
 #define BE_TREE_H
 
-
+#include<stack>;
 using namespace std;
 
 class BET {
@@ -15,7 +15,7 @@ class BET {
         BinaryNode(const string& e = string{}, BinaryNode *l = nullptr, BinaryNode *r = nullptr) 
             : element{e}, left{l}, right{r} {} // initialize BinaryNode data members
     };
-        
+
     public:
         BET(); // default zero-parameter constructor
         BET(const string& postfix); // 1 param constructor -- build tree from the postfix expression 
@@ -32,6 +32,7 @@ class BET {
         bool empty(); // return true if tree is empty, false otherwise
 
     private:
+        BinaryNode* t_root; // the current root of the tree
         void printInfixExpression(BinaryNode* n);
         void makeEmpty(BinaryNode*& t); // delete all nodes in subtree pointed to by "t"
         BinaryNode* clone(BinaryNode* t); // clone all nodes in subtree pointed to by "t"
