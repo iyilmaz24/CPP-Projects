@@ -1,7 +1,11 @@
 #ifndef BE_TREE_H
 #define BE_TREE_H
 
-#include<stack>;
+#include <stack>
+#include <ctype.h>
+#include <stdio.h>
+#include <string>
+#include <iostream>
 using namespace std;
 
 class BET {
