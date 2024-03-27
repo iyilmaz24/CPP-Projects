@@ -1,1 +1,52 @@
 # program outputs
+
+my postF: 4 50 6 + +
+infix: 4 + 50 + 6 
+postfix: 4 50 6 + + 
+node count (size): 5
+leaf count (leaf_nodes): 3
+ -- -- -- -- -- 
+my postF: 4 50 + 6 +
+infix: 4 + 50 + 6 
+postfix: 4 50 + 6 + 
+node count (size): 5
+leaf count (leaf_nodes): 3
+ -- -- -- -- -- 
+my postF: 4 50 + 6 2 * +
+infix: 4 + 50 + 6 * 2 
+postfix: 4 50 + 6 2 * + 
+node count (size): 7
+leaf count (leaf_nodes): 4
+ -- -- -- -- -- 
+my postF: 4 50 6 + + 2 *
+infix: ( 4 + 50 + 6 ) * 2 
+postfix: 4 50 6 + + 2 * 
+node count (size): 7
+leaf count (leaf_nodes): 4
+ -- -- -- -- -- 
+my postF: a b + c d e + * *
+infix: ( a + b ) * ( c * ( d + e ) ) 
+postfix: a b + c d e + * * 
+node count (size): 9
+leaf count (leaf_nodes): 5
+ -- -- -- -- -- 
+Invalid Postfix Exp Provided, Not Enough Operators Provided For Operands
+my postF: 
+infix: ( a + b ) * ( c * ( d + e ) ) 
+postfix: a b + c d e + * * 
+node count (size): 9
+leaf count (leaf_nodes): 5
+ -- -- -- -- -- 
+Invalid Postfix Exp Provided, Not Enough Operators Provided For Operands
+my postF:  
+infix: ( a + b ) * ( c * ( d + e ) ) 
+postfix: a b + c d e + * * 
+node count (size): 9
+leaf count (leaf_nodes): 5
+ -- -- -- -- -- 
+my postF: abc
+infix: abc 
+postfix: abc 
+node count (size): 1
+leaf count (leaf_nodes): 1
+ -- -- -- -- -- 

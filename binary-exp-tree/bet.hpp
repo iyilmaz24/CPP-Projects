@@ -20,18 +20,15 @@ BET :: ~BET() {
 bool BET :: buildFromPostfix(const string& postfix) {
     stack<BinaryNode*> localStack{};
     string currToken = "";
-
     for(int i = 0; i < postfix.length(); i++) { // if current char is not a space or last char, add onto currToken
 
         if(postfix[i] != ' ') { 
-            // cout << "branch 1 ^" << endl;
             currToken += postfix[i];
             if(i != postfix.length() - 1) {
                 continue;
             }
         }
         if(opPrec(currToken) != 0) { // if currToken is an operator
-            // cout << "branch 2 ^" << endl;
             if(localStack.size() < 2) { 
                 cout << "Invalid Postfix Exp Provided, Too Many Operators OR Incorrect Input Sequence" << endl;
                 return false; // if less than 2 nodes in our stack
@@ -45,14 +42,10 @@ bool BET :: buildFromPostfix(const string& postfix) {
             currToken = "";
         }
         else if (isOperand(currToken) == true) { // if currToken is an operand
-            // cout << "branch 3 ^" << endl;
             BinaryNode* newNode = new BinaryNode(currToken);
             localStack.push(newNode);
             currToken = "";
         }
-        // else {
-        //     cout << "no branches" << endl;
-        // }
     }
     
     if(localStack.size() == 1) { // set t_root equal to last BinaryNode in stack
@@ -63,7 +56,6 @@ bool BET :: buildFromPostfix(const string& postfix) {
         cout << "Invalid Postfix Exp Provided, Not Enough Operators Provided For Operands" << endl;
         return false;
     }
-
 };
 const BET& BET :: operator= (const BET& BET) {
     t_root = clone(BET.t_root);
@@ -89,11 +81,36 @@ bool BET :: empty() {
 // ------------ PRIVATE METHODS ------------ //
 
 void BET :: printInfixExpression(BinaryNode* n) {
-    
-    if(n != nullptr) { 
-        printInfixExpression(n->left); // traverse left
+    if(n->left == nullptr && n->right == nullptr) {
         cout << n->element << " ";
-        printInfixExpression(n->right); // traverse right
+        return;
+    }
+
+    int unclosedPar = 0;
+    if(n != nullptr) { 
+        if(opPrec(n->right->element) <= opPrec(n->element) && opPrec(n->right->element) != 0 && opPrec(n->element) != 0) {
+            if(opPrec(n->element) > 1) {
+            cout << "( ";
+            unclosedPar += 1;
+        }}
+        printInfixExpression(n->right); // traverse right child
+
+        if(unclosedPar != 0) {
+            cout << ") "; unclosedPar -= 1;
+        }
+
+        cout << n->element << " "; // print parent/origin node
+
+        if(opPrec(n->left->element) <= opPrec(n->element) && opPrec(n->left->element) != 0 && opPrec(n->element) != 0) {
+            if(opPrec(n->element) > 1) {
+                cout << "( ";
+                unclosedPar += 1;
+        }}
+        printInfixExpression(n->left); // traverse left child
+
+        if(unclosedPar != 0) {
+            cout << ") "; unclosedPar -= 1;
+        }
     }
 };
 void BET :: makeEmpty(BinaryNode*& t) {
@@ -110,7 +127,11 @@ BET::BinaryNode* BET :: clone(BinaryNode* t) {
     return new BinaryNode(t->element, clone(t->left), clone(t->right));
 };
 void BET :: printPostfixExpression(BinaryNode* n) {
-
+    if(n != nullptr) {
+        printPostfixExpression(n->right);
+        printPostfixExpression(n->left);
+        cout << n->element << " ";
+    }
 };
 size_t BET :: size(BinaryNode* t) {
     if(t == nullptr) {
