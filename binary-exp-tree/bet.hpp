@@ -18,6 +18,14 @@ BET :: ~BET() {
     makeEmpty(t_root);
 };
 bool BET :: buildFromPostfix(const string& postfix) {
+    if(postfix[0] == ' ' || postfix.length() == 0) {
+        cout << "Invalid Postfix Exp Provided, Leading Whitespace OR Blank" << endl;
+        return false;
+    }
+    if (size(t_root) != 0) {
+        makeEmpty(t_root);
+    }
+
     stack<BinaryNode*> localStack{};
     string currToken = "";
     for(int i = 0; i < postfix.length(); i++) { // if current char is not a space or last char, add onto currToken
@@ -58,6 +66,9 @@ bool BET :: buildFromPostfix(const string& postfix) {
     }
 };
 const BET& BET :: operator= (const BET& BET) {
+    if (size(t_root) != 0) {
+        makeEmpty(t_root);
+    }
     t_root = clone(BET.t_root);
     return *this;
 };

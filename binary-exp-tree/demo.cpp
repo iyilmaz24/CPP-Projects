@@ -14,6 +14,9 @@ int main() {
     vector<string> testInputs = {"4 50 6 + +", "4 50 + 6 +", "4 50 + 6 2 * +",
     "4 50 6 + + 2 *", "a b + c d e + * *", "", " ", "abc" };
 
+
+    // vector<string> testInputs = {"4 50 6 + +"};
+
     BET myTree = BET();
 
     for(auto postF : testInputs) {
@@ -28,7 +31,3 @@ int main() {
 
     return 0;
 }
-
-// valgrind --leak-check=full --track-origins=yes -v ./demo.x
-// g++ -g demo.cpp -o demo.x
-
