@@ -19,7 +19,12 @@ size_t cop4530::HashTable<K, V>::size() {
 template <typename K, typename V>
 bool cop4530::HashTable<K, V>::contains(const K& k) {
     auto& selected_list = hash_table[myhash(k)];
-    return find(begin(selected_list), end(selected_list), k) != end(selected_list);
+    for(auto& kv : selected_list) {
+        if(kv.first == k) {
+            return true;
+        }
+    }
+    return false;
 }
 
 template <typename K, typename V>
@@ -47,7 +52,7 @@ bool cop4530::HashTable<K, V>::insert(const std::pair<K, V>& kv) {
         selected_list.push_back(kv);
     }
 
-    int curr_size = hash_table.size();
+    int curr_size = ht_entries;
     if(++curr_size > hash_table.size()) {
         rehash();
     }
@@ -70,7 +75,7 @@ bool cop4530::HashTable<K, V>::insert(std::pair<K, V>&& kv) {
         selected_list.push_back(kv);
     }
 
-    int curr_size = hash_table.size();
+    int curr_size = ht_entries;
     if(++curr_size > hash_table.size()) {
         rehash();
     }
@@ -80,15 +85,15 @@ bool cop4530::HashTable<K, V>::insert(std::pair<K, V>&& kv) {
 template <typename K, typename V>
 bool cop4530::HashTable<K, V>::remove(const K& k) {
     auto& selected_list = hash_table[myhash(k)];
-    auto iterator = find(begin(selected_list), end(selected_list), k);
 
-    if(iterator == end(selected_list)) {
-        return false;
+    for(auto itr = selected_list.begin(); itr != selected_list.end(); itr++) {
+        if(itr->first == k) {
+            selected_list.erase(itr);
+            --ht_entries;
+            return true;
+        }
     }
-
-    selected_list.erase(iterator);
-    --ht_entries;
-    return true;
+    return false;
 }
 
 template <typename K, typename V>
@@ -102,7 +107,7 @@ bool cop4530::HashTable<K, V>::load(const char* filename) {
     ifstream input_stream; input_stream.clear();
     input_stream.open(filename);
 
-    if(input_stream == false) {
+    if(!input_stream) {
         return false;
     }
     while(input_stream.eof() == false) {
@@ -117,17 +122,17 @@ template <typename K, typename V>
 void cop4530::HashTable<K, V>::dump() {
     int temp = 0;
     for(auto& currList : hash_table) {
-        cout << "v[" + temp + "]: ";
+        cout << "v[" << temp << "]: ";
 
         if(currList.size() == 1) {
-            cout << currList[0].first + " " currList[0].second << endl;
+            cout << currList.begin()->first << " " << currList.begin()->second;
         }
         else {
             for(auto& kv : currList) {
-                cout << kv.first + " " kv.second + ":" << endl;
+                cout << kv.first << " " << kv.second; cout << ":";
             }
         }
-        ++temp;
+        cout << endl; ++temp;
     }
 }
 
@@ -136,17 +141,17 @@ bool cop4530::HashTable<K, V>::write_to_file(const char* filename) {
     ofstream output_stream;
     output_stream.open(filename);
 
-    if(output_stream == false) {
+    if(!output_stream) {
         return false;
     }
     for(auto& currList : hash_table) {
 
         if(currList.size() == 1) {
-            cout << currList[0].first + " " currList[0].second << endl;
+            output_stream << currList.begin()->first << " " << currList.begin()->second << endl;
         }
         else {
             for(auto& kv : currList) {
-                cout << kv.first + " " kv.second << endl;
+                output_stream << kv.first << " " << kv.second << endl;
             }
         }
     }

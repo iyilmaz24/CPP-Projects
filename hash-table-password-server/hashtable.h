@@ -8,6 +8,7 @@
 #include<fstream>
 #include<algorithm>
 
+
 using namespace std;
 
 static const unsigned int max_prime = 1301081;      // max_prime is used internally
