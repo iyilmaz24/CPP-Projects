@@ -67,17 +67,37 @@ void FreqTracker::printStrs() {
 vector<pair<char, int> > FreqTracker::getTop10Chrs() {
     vector<pair<char, int> > results;
     std::priority_queue<pair<int, pair<char, int> > > pq; // <pair<freq, pair<char, read_index> > >
+    std::set<pair<char, int> > sorted_set; // <pair<read_index, pair<char, freq> > >;
 
-    if(char_map.size() <= 10) {
-        for(auto itr = char_map.begin(); itr != char_map.end(); ++itr) {
-            pq.push(make_pair(itr->second.first, make_pair(itr->first, itr->second.second)));
-        }
-        while(!pq.empty()) {
-            results.push_back(make_pair(pq.top().second.first, pq.top().first)); pq.pop();
-        }
+    for(auto itr = char_map.begin(); itr != char_map.end(); ++itr) {
+        pq.push(make_pair(itr->second.first, make_pair(itr->first, itr->second.second)));
     }
-    else {
-        cout << "not implemented yet";
+
+    while(results.size() < 10) {
+        if(pq.empty() && sorted_set.empty()) {
+            break;
+        }
+
+        pair<int, pair<char, int> > temp;
+        if(!pq.empty()) {
+            temp = pq.top(); pq.pop(); // <pair<freq, pair<char, read_index> > >
+        }
+
+        if(!pq.empty() && temp.first == pq.top().first) { // if freq is the same, add to set with ascii value serving as the key
+            sorted_set.insert(make_pair(temp.second.first, temp.first));
+        }
+        else {
+            if(!sorted_set.empty()) {
+                sorted_set.insert(make_pair(temp.second.first, temp.first));
+                while(!sorted_set.empty() && results.size() < 10) {
+                    results.push_back(make_pair(sorted_set.begin()->first, sorted_set.begin()->second));
+                    sorted_set.erase(sorted_set.begin());
+                }
+            }
+            else {
+                results.push_back(make_pair(temp.second.first, temp.first));
+            }
+        }
     }
 
     return results;
