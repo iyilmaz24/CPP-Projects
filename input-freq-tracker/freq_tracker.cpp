@@ -9,24 +9,23 @@
 
 using namespace std;
 
-
 class FreqTracker {
 
     public:
 
-//        void insert_file(const char* filename);
-        void printHello();
+        void addNum(std::pair<string, std::pair<int, int> > num_pair);
+        void addChr(std::pair<string, std::pair<int, int> > chr_pair);
+        void addStr(std::pair<string, std::pair<int, int> > str_pair);
 
+        void printNums();
+        void printChrs();
+        void printStrs();
 
     private:
 
-//        bool read_file(const char* filename);
-        // return True if successful, False otherwise
-
-
-        map<string, int> word_map;
-        map<string, int> char_map;
-        map<string, int> number_map;
+        map<string, std::pair<int, int> > string_map;
+        map<string, std::pair<int, int> > char_map;
+        map<string, std::pair<int, int> > number_map;
 
 };
 
