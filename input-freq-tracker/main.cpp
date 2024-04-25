@@ -9,6 +9,8 @@ using namespace std;
 
 int main() {
 
+    freopen("./tests6/test5", "r" ,stdin);
+
     FreqTracker freqTracker;
 
     string curr; char ch; int iter = 0;
@@ -66,3 +68,4 @@ int main() {
 
 //    ./main.x < ./tests6/test4
 //    g++ -std=c++17 main.cpp -o main.x
+//    valgrind --leak-check=full --track-origins=yes -v ./main.x

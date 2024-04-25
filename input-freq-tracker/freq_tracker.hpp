@@ -88,16 +88,39 @@ vector<pair<string, int> > FreqTracker::getTop10Strs() {
     vector<pair<string, int> > results;
     std::priority_queue<pair<int, pair<string, int> > > pq; // <pair<freq, pair<str, read_index> > >
 
+    for(auto itr = string_map.begin(); itr != string_map.end(); ++itr) {
+        pq.push(make_pair(itr->second.first, make_pair(itr->first, itr->second.second)));
+    }
     if(string_map.size() <= 10) {
-        for(auto itr = string_map.begin(); itr != string_map.end(); ++itr) {
-            pq.push(make_pair(itr->second.first, make_pair(itr->first, itr->second.second)));
-        }
         while(!pq.empty()) {
             results.push_back(make_pair(pq.top().second.first, pq.top().first)); pq.pop();
         }
     }
     else {
-        cout << "not implemented yet";
+        std::set<pair<int, pair<string, int> > > sorted_set; // <pair<read_index, pair<str, freq> > >;
+        while(results.size() < 10) {
+            pair<int, pair<string, int> > temp;
+            if(!pq.empty()) {
+                temp = pq.top(); pq.pop();
+            }
+
+            if(!pq.empty() && temp.first == pq.top().first) { // if freq is the same, add to set with freq serving as the key
+                sorted_set.insert(make_pair(temp.second.second, make_pair(temp.second.first, temp.first)));
+            }
+            else {
+                if(!sorted_set.empty()) {
+                    sorted_set.insert(make_pair(temp.second.second, make_pair(temp.second.first, temp.first)));
+                    while(!sorted_set.empty() && results.size() < 10) {
+                        results.push_back(make_pair(sorted_set.begin()->second.first, sorted_set.begin()->second.second));
+                        sorted_set.erase(sorted_set.begin());
+                    }
+                }
+                else {
+                    results.push_back(make_pair(temp.second.first, temp.second.second));
+                }
+            }
+
+        }
     }
 
     return results;
