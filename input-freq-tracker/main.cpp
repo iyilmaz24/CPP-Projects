@@ -9,16 +9,16 @@ using namespace std;
 
 int main() {
 
-    freopen("./tests6/test5", "r" ,stdin);
+//    freopen("./tests6/test5", "r" ,stdin);
+
 
     FreqTracker freqTracker;
-
     string curr; char ch; int iter = 0;
 
     while(!cin.eof()) {
 
         cin.get(ch); iter++;
-        if(! cin.fail()) {
+        if(!cin.fail()) {
             freqTracker.addChr(make_pair(ch, make_pair(1, iter)));
         }
 
@@ -33,10 +33,12 @@ int main() {
             }
             else if(isdigit(ch)) { // add currently saved num and reset buffer with char
                 if(isalpha(curr.back())) {
-                    freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
+                    if(curr.length() > 1) {
+                        freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
+                    }
                     curr = "";
                 }
-                 curr += ch;
+                curr += ch;
             }
             else if(isalpha(ch)) { // add currently saved string / char and reset buffer with digit
                 if(isdigit(curr.back())) {
@@ -50,7 +52,7 @@ int main() {
             if(isdigit(curr.back())) {
                 freqTracker.addNum(make_pair(curr, make_pair(1, iter)));
             }
-            else if (isalpha(curr.back())) {
+            else if (isalpha(curr.back()) && curr.length() > 1) {
                 freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
             }
             curr = "";
