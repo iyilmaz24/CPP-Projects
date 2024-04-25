@@ -16,54 +16,53 @@ int main() {
     while(!cin.eof()) {
 
         cin.get(ch); iter++;
+        if(! cin.fail()) {
+            freqTracker.addChr(make_pair(ch, make_pair(1, iter)));
+        }
 
         if(ch != ' ') {
             if(cin.fail()) {
-                isdigit(curr.back()) ? freqTracker.addNum(make_pair(curr, make_pair(1, iter))) :
-                    curr.length() == 1 ? freqTracker.addChr(make_pair(curr, make_pair(1, iter))) :
+                if(isdigit(curr.back()) && curr.length() > 1) {
+                    freqTracker.addNum(make_pair(curr, make_pair(1, iter)));
+                }
+                else if(isalpha(curr.back()) && curr.length() > 1) {
                     freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
-
-                isdigit(curr.back()) ? cout << "freqTracker.addNum(curr):" + curr << endl :
-                curr.length() == 1 ? cout << "freqTracker.addChar(curr):" + curr << endl : cout << "freqTracker.addStr(curr):" + curr << endl;
+                }
             }
             else if(isdigit(ch)) { // add currently saved num and reset buffer with char
                 if(isalpha(curr.back())) {
-                    curr.length() == 1 ? freqTracker.addChr(make_pair(curr, make_pair(1, iter))) : freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
-                    curr.length() == 1 ? cout << "freqTracker.addChar(curr):" + curr << endl : cout << "freqTracker.addStr(curr):" + curr << endl;
+                    freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
                     curr = "";
                 }
                  curr += ch;
             }
             else if(isalpha(ch)) { // add currently saved string / char and reset buffer with digit
-                ch = std::tolower(ch);
                 if(isdigit(curr.back())) {
                     freqTracker.addNum(make_pair(curr, make_pair(1, iter)));
-                    cout << "freqTracker.addNum(curr):" + curr << endl;
                     curr = "";
                 }
-                curr += ch;
+                curr +=  tolower(ch);
             }
         }
         else {
             if(isdigit(curr.back())) {
                 freqTracker.addNum(make_pair(curr, make_pair(1, iter)));
-                cout << "freqTracker.addNum(curr):" + curr << endl;
             }
             else if (isalpha(curr.back())) {
-                curr.length() == 1 ? freqTracker.addChr(make_pair(curr, make_pair(1, iter))) : freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
-                curr.length() == 1 ? cout << "freqTracker.addChar(curr):" + curr << endl : cout << "freqTracker.addStr(curr):" + curr << endl;
+                freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
             }
             curr = "";
         }
 
     };
 
-    freqTracker.printNums();
-    freqTracker.printChrs();
-    freqTracker.printStrs();
 
-    //    ./main.x < ./tests6/test4
-    //    g++ -std=c++17 main.cpp -o main.x
+    freqTracker.printChrs(); cout << endl;
+    freqTracker.printStrs(); cout << endl;
+    freqTracker.printNums();
+
     return 0;
 }
 
+//    ./main.x < ./tests6/test4
+//    g++ -std=c++17 main.cpp -o main.x
