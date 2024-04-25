@@ -1,16 +1,11 @@
 
-
 #include <string>
 #include <iostream>
 #include "freq_tracker.cpp"
 
 using namespace std;
 
-
 int main() {
-
-//    freopen("./tests6/test5", "r" ,stdin);
-
 
     FreqTracker freqTracker;
     string curr; char ch; int iter = 0;
@@ -18,30 +13,31 @@ int main() {
     while(!cin.eof()) {
 
         cin.get(ch); iter++;
-        if(!cin.fail()) {
+        if(!cin.fail()) { // if at the end of the file, cin will fail
             freqTracker.addChr(make_pair(ch, make_pair(1, iter)));
         }
 
         if(ch != ' ') {
-            if(cin.fail()) {
-                if(isdigit(curr.back()) && curr.length() > 1) {
+            if(cin.fail() || ispunct(ch) || ch == '\n') {
+                if(isdigit(curr.back())) {
                     freqTracker.addNum(make_pair(curr, make_pair(1, iter)));
                 }
-                else if(isalpha(curr.back()) && curr.length() > 1) {
+                else if(isalpha(curr.back())) {
                     freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
                 }
+                if(ispunct(ch) || ch == '\n') {
+                    curr = "";
+                }
             }
-            else if(isdigit(ch)) { // add currently saved num and reset buffer with char
-                if(isalpha(curr.back())) {
-                    if(curr.length() > 1) {
-                        freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
-                    }
+            else if(isdigit(ch)) {
+                if(isalpha(curr.back())) { // add currently saved str and reset buffer
+                    freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
                     curr = "";
                 }
                 curr += ch;
             }
-            else if(isalpha(ch)) { // add currently saved string / char and reset buffer with digit
-                if(isdigit(curr.back())) {
+            else if(isalpha(ch)) {
+                if(isdigit(curr.back())) { // add currently saved num and reset buffer
                     freqTracker.addNum(make_pair(curr, make_pair(1, iter)));
                     curr = "";
                 }
@@ -52,14 +48,12 @@ int main() {
             if(isdigit(curr.back())) {
                 freqTracker.addNum(make_pair(curr, make_pair(1, iter)));
             }
-            else if (isalpha(curr.back()) && curr.length() > 1) {
+            else if (isalpha(curr.back())) {
                 freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
             }
             curr = "";
         }
-
     };
-
 
     freqTracker.printChrs(); cout << endl;
     freqTracker.printStrs(); cout << endl;

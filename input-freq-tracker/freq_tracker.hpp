@@ -1,6 +1,5 @@
 
 
-
 void FreqTracker::addNum(std::pair<string, std::pair<int, int> > num_pair) {
     auto itr = number_map.find(num_pair.first);
     if(itr == number_map.end()) {
@@ -29,7 +28,6 @@ void FreqTracker::addStr(std::pair<string, std::pair<int, int> > str_pair) {
 }
 
 
-
 void FreqTracker::printNums() {
     vector<pair<string, int> > numbersTop10 = getTop10Nums();
     cout << "Total "<< number_map.size() << " different numbers, " << numbersTop10.size() << " most used numbers:" << endl;
@@ -38,7 +36,6 @@ void FreqTracker::printNums() {
     for(auto itr = numbersTop10.begin(); itr != numbersTop10.end(); ++itr){
         cout << "No. " << count << ": " << itr->first << "\t\t" << itr->second << "\n"; count++;
     }
-
 }
 
 void FreqTracker::printChrs() {
@@ -47,9 +44,12 @@ void FreqTracker::printChrs() {
     int count = 0;
 
     for(auto itr = charsTop10.begin(); itr != charsTop10.end(); ++itr){
+        if(itr->first == '\n') { // branch for escaping and printing new line chars
+            cout << "No. " << count << ": " << "\\n" << "\t\t" << itr->second << "\n"; count++;
+            continue;
+        }
         cout << "No. " << count << ": " << itr->first << "\t\t" << itr->second << "\n"; count++;
     }
-
 }
 
 void FreqTracker::printStrs() {
@@ -60,7 +60,6 @@ void FreqTracker::printStrs() {
     for(auto itr = stringsTop10.begin(); itr != stringsTop10.end(); ++itr){
         cout << "No. " << count << ": " << itr->first << "\t\t" << itr->second << "\n"; count++;
     }
-
 }
 
 
@@ -69,12 +68,12 @@ vector<pair<char, int> > FreqTracker::getTop10Chrs() {
     std::priority_queue<pair<int, pair<char, int> > > pq; // <pair<freq, pair<char, read_index> > >
     std::set<pair<char, int> > sorted_set; // <pair<read_index, pair<char, freq> > >;
 
-    for(auto itr = char_map.begin(); itr != char_map.end(); ++itr) {
+    for(auto itr = char_map.begin(); itr != char_map.end(); ++itr) { // heap orders by ascii value
         pq.push(make_pair(itr->second.first, make_pair(itr->first, itr->second.second)));
     }
 
     while(results.size() < 10) {
-        if(pq.empty() && sorted_set.empty()) {
+        if(pq.empty() && sorted_set.empty()) { // if we have already processed all the data
             break;
         }
 
@@ -89,7 +88,7 @@ vector<pair<char, int> > FreqTracker::getTop10Chrs() {
         else {
             if(!sorted_set.empty()) {
                 sorted_set.insert(make_pair(temp.second.first, temp.first));
-                while(!sorted_set.empty() && results.size() < 10) {
+                while(!sorted_set.empty() && results.size() < 10) { // sorted_set orders by ascii value, ascending
                     results.push_back(make_pair(sorted_set.begin()->first, sorted_set.begin()->second));
                     sorted_set.erase(sorted_set.begin());
                 }
@@ -99,7 +98,6 @@ vector<pair<char, int> > FreqTracker::getTop10Chrs() {
             }
         }
     }
-
     return results;
 }
 
@@ -109,15 +107,14 @@ vector<pair<string, int> > FreqTracker::getTop10Strs() {
     std::priority_queue<pair<int, pair<string, int> > > pq; // <pair<freq, pair<str, read_index> > >
     std::set<pair<int, pair<string, int> > > sorted_set; // <pair<read_index, pair<str, freq> > >;
 
-    for(auto itr = string_map.begin(); itr != string_map.end(); ++itr) {
+    for(auto itr = string_map.begin(); itr != string_map.end(); ++itr) { // heap orders by index of when data was read
         pq.push(make_pair(itr->second.first, make_pair(itr->first, itr->second.second)));
     }
 
     while(results.size() < 10) {
-        if(pq.empty() && sorted_set.empty()) {
+        if(pq.empty() && sorted_set.empty()) { // if we have already processed all the data
             break;
         }
-
         pair<int, pair<string, int> > temp;
         if(!pq.empty()) {
             temp = pq.top(); pq.pop(); // <pair<freq, pair<str, read_index> > >
@@ -129,7 +126,7 @@ vector<pair<string, int> > FreqTracker::getTop10Strs() {
         else {
             if(!sorted_set.empty()) {
                 sorted_set.insert(make_pair(temp.second.second, make_pair(temp.second.first, temp.first)));
-                while(!sorted_set.empty() && results.size() < 10) {
+                while(!sorted_set.empty() && results.size() < 10) { // sorted_set orders by data's read index, ascending
                     results.push_back(make_pair(sorted_set.begin()->second.first, sorted_set.begin()->second.second));
                     sorted_set.erase(sorted_set.begin());
                 }
@@ -139,7 +136,6 @@ vector<pair<string, int> > FreqTracker::getTop10Strs() {
             }
         }
     }
-
     return results;
 }
 
@@ -149,7 +145,7 @@ vector<pair<string, int> > FreqTracker::getTop10Nums() {
     std::priority_queue<pair<int, pair<string, int> > > pq; // <pair<freq, pair<num, read_index> > >
     std::set<pair<int, pair<string, int> > > sorted_set; // <pair<read_index, pair<num, freq> > >;
 
-    for(auto itr = number_map.begin(); itr != number_map.end(); ++itr) {
+    for(auto itr = number_map.begin(); itr != number_map.end(); ++itr) { // heap orders by index of when data was read
         pq.push(make_pair(itr->second.first, make_pair(itr->first, itr->second.second)));
     }
 
@@ -157,9 +153,8 @@ vector<pair<string, int> > FreqTracker::getTop10Nums() {
         if(pq.empty() && sorted_set.empty()) {
             break;
         }
-
         pair<int, pair<string, int> > temp;
-        if(!pq.empty()) {
+        if(!pq.empty()) { // if we have already processed all the data
             temp = pq.top(); pq.pop(); // <pair<freq, pair<num, read_index> > >
         }
 
@@ -169,7 +164,7 @@ vector<pair<string, int> > FreqTracker::getTop10Nums() {
         else {
             if(!sorted_set.empty()) {
                 sorted_set.insert(make_pair(temp.second.second, make_pair(temp.second.first, temp.first)));
-                while(!sorted_set.empty() && results.size() < 10) {
+                while(!sorted_set.empty() && results.size() < 10) { // sorted_set orders by data's read index, ascending
                     results.push_back(make_pair(sorted_set.begin()->second.first, sorted_set.begin()->second.second));
                     sorted_set.erase(sorted_set.begin());
                 }
@@ -179,6 +174,5 @@ vector<pair<string, int> > FreqTracker::getTop10Nums() {
             }
         }
     }
-
     return results;
 }
