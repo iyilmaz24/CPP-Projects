@@ -19,10 +19,10 @@ int main() {
 
         if(ch != ' ') {
             if(cin.fail() || ispunct(ch) || ch == '\n') {
-                if(isdigit(curr.back())) {
+                if(!curr.empty() && isdigit(curr.back())) {
                     freqTracker.addNum(make_pair(curr, make_pair(1, iter)));
                 }
-                else if(isalpha(curr.back())) {
+                else if(!curr.empty() && isalpha(curr.back())) {
                     freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
                 }
                 if(ispunct(ch) || ch == '\n') {
@@ -30,14 +30,14 @@ int main() {
                 }
             }
             else if(isdigit(ch)) {
-                if(isalpha(curr.back())) { // add currently saved str and reset buffer
+                if(!curr.empty() && isalpha(curr.back())) { // add currently saved str and reset buffer
                     freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
                     curr = "";
                 }
                 curr += ch;
             }
             else if(isalpha(ch)) {
-                if(isdigit(curr.back())) { // add currently saved num and reset buffer
+                if(!curr.empty() && isdigit(curr.back())) { // add currently saved num and reset buffer
                     freqTracker.addNum(make_pair(curr, make_pair(1, iter)));
                     curr = "";
                 }
@@ -45,18 +45,18 @@ int main() {
             }
         }
         else {
-            if(isdigit(curr.back())) {
+            if(!curr.empty() && isdigit(curr.back())) {
                 freqTracker.addNum(make_pair(curr, make_pair(1, iter)));
             }
-            else if (isalpha(curr.back())) {
+            else if (!curr.empty() && isalpha(curr.back())) {
                 freqTracker.addStr(make_pair(curr, make_pair(1, iter)));
             }
             curr = "";
         }
     };
 
-    freqTracker.printChrs(); cout << endl;
-    freqTracker.printStrs(); cout << endl;
+    freqTracker.printChrs(); cout << '\n';
+    freqTracker.printStrs(); cout << '\n';
     freqTracker.printNums();
 
     return 0;
